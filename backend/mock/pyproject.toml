@@ -9,7 +9,7 @@ dependencies = []
 deye-mock = "deye_mock.server:main"
 
 [dependency-groups]
-dev = ["pytest==8.4.2", "ruff==0.14.5"]
+dev = ["pytest==9.0.3", "ruff==0.14.5"]
 
 [build-system]
 requires = ["hatchling==1.27.0"]
