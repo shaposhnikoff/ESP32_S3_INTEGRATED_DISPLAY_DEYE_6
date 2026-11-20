@@ -18,7 +18,7 @@ Results from the final development checks and the connected 5B board.
 | Clean-configure dependency regression | unpatched SDK: 16 -> 25 dependencies and LVGL 9.6.0; patched SDK: 16 -> 16 and LVGL 9.3.0; same source revision |
 | Patched helper build and canonical lock preservation | build exited 0; lock byte-for-byte equal to clean patched configure |
 | License delivery in release archive | project `LICENSE`/`NOTICE` and LVGL/dependency license files verified inside tar.gz |
-| GitHub Actions | run `44736051481` exposed the SDK rerun bug; run `44741607457` compiled successfully but detected cross-platform YAML wrapping; deterministic-emitter rerun pending |
+| GitHub Actions | **run `44744552799`, revision `b5d2f5a`: all four jobs passed**, including unchanged lock, package/image validation and firmware upload |
 | Flash via native USB-Serial/JTAG | **passed**, image hashes verified, automatic reset |
 | Boot, RGB display, GT911 initialization | **passed** in boot logs |
 | File profile, NVS reload, automatic Wi-Fi/DHCP and real telemetry | **passed** in boot logs and device captures |
@@ -44,6 +44,18 @@ cppcheck ran in Ubuntu 24.04. Firmware build and packaging commands were
 The clean-build regression is fixed in the project Dockerfile's SDK CMake
 filter, not by changing LVGL versions or suppressing compiler diagnostics.
 See completion-audit.md for the failure mechanism and toggle evidence.
+
+CI artifact: `deye-hmi-firmware`, ID `14632149750`, 4,101,994 bytes,
+source `b5d2f5a6e24034c79ab82d047a47a45794030bbf`.
+Upload digest:
+`sha256:9d6f4323e4af70aa19279b317522434fad4a4c0ec0931a09f74e766eb9e624a7`.
+It contains the unprovisioned firmware bundle and license files; private
+network credentials are not part of the CI checkout.
+
+The subsequent independent review identified three open findings, documented
+in backlog.md and independent-review.md. Existing passing tests do not cover
+open-dialog expiry or an endpoint change during an in-flight HTTP request.
+No fixes or new regression-test passes are claimed for these deferred items.
 
 Container activation printed a non-fatal warning that UID 501 has no username
 inside the image; compilation and packaging succeeded.

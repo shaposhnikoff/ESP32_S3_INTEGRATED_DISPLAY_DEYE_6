@@ -13,7 +13,8 @@ checks below have not been completed.
 
 | Status | Features |
 |---|---|
-| Implemented and tested | Telemetry parser, model, freshness, bounded history, control rejection rules; ten-screen UI rendering; repeated-dialog-confirmation and PIN-session regressions; file-based Wi-Fi provisioning, saved NVS profile and automatic live connection; LAN screenshots with protected-screen rejection |
+| Implemented and tested | Telemetry parser, model, freshness, bounded history, control rejection rules; ten-screen UI rendering; repeated-dialog-confirmation and basic PIN-session regressions; file-based Wi-Fi provisioning, saved NVS profile and automatic live connection; LAN screenshots with protected-screen rejection |
+| Known issues deferred | Open protected dialogs outlive PIN expiry; in-flight data/history are not isolated across backend endpoint changes; release archive bytes are not reproducible |
 | Implemented but hardware-unverified | Physical touch calibration and manual Wi-Fi entry, static IPv4/DNS, screen timeout/wake, PIN input on glass, OTA/rollback, factory reset, long-running stability |
 | Implemented with mock backend only | HTTP timeout/offline, malformed/missing metrics, upstream Modbus failure, alarm and changing SOC scenarios through the real C telemetry parser |
 | Blocked by missing external information | Inverter write API, verified writable parameters, grid import/export sign convention |
@@ -58,6 +59,8 @@ The project Dockerfile builds `deye-hmi-idf:5.5.1` from the pinned
 `espressif/idf:v5.5.1` base. A minimal SDK CMake filter prevents managed
 components becoming local overrides during configure reruns; dependency
 versions and compiler warning checks remain unchanged.
+The lock serializer explicitly uses the Python YAML emitter on ARM64 and
+AMD64, retaining the strict byte-for-byte lock gate.
 Host tests additionally need CMake and a C compiler:
 
 ```bash
@@ -108,12 +111,17 @@ The LVGL harness rendered and navigated all ten screens and passed dialog,
 PIN-expiry and screenshot-access regressions with ASan/UBSan.
 Firmware build, C/Python formatting, cppcheck, shellcheck and actionlint passed.
 Detailed evidence and remaining checks are in test-results.md.
+GitHub Actions run `44744552799` for source revision `b5d2f5a` passed all
+four jobs, including dependency-lock preservation, release image validation
+and artifact upload.
 
 Manual code review corrected repeated text-dialog submission, PIN-session
 handling and freshness handling. Device captures exposed a tab-transition
 timing issue; capture now lets the normal animation finish without locking
-the GUI during that wait. The independent reviewer did not complete;
-these results are not an independent review sign-off.
+the GUI during that wait. Agent-based review attempts did not return a usable
+assessment. A subsequent direct independent review of 92 supplied source files
+returned **REJECT** with three findings. The fixes are
+deferred in backlog.md; source scope and limits are in independent-review.md.
 
 ## 10. Firmware binary location
 
@@ -124,6 +132,8 @@ these results are not an independent review sign-off.
 
 These local artifacts are excluded from Git. CI builds artifacts from the
 published source without the private network profile.
+The validated CI bundle is the `deye-hmi-firmware` artifact from run
+`44744552799`, artifact ID `14632149750`.
 
 ## 11. Known limitations
 
@@ -133,6 +143,9 @@ Credentials/PIN use NVS without flash encryption. Screenshot diagnostics use
 unauthenticated HTTP and require a trusted LAN or disabling the feature.
 Internal free heap observed through diagnostics was about 10 KB; no
 long-duration heap-stability claim is made.
+Known PIN-dialog and backend-endpoint-change issues remain unresolved.
+Build reproducibility does not imply byte-identical release archives.
+See backlog.md for the deferred corrections and regression criteria.
 
 ## 12. Hardware validation status
 

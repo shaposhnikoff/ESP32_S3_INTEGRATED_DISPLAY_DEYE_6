@@ -1,6 +1,7 @@
 # Master-prompt completion audit
 
 Date: 2026-11-20. Runtime source baseline: `d2c5181`.
+Validated build/tooling revision: `b5d2f5a`.
 
 The deliverable is a functioning, reproducibly buildable 5B monitoring HMI,
 with a real read-only exporter adapter, mock tests, safe disabled controls,
@@ -47,7 +48,7 @@ model/telemetry/history/control share `components/deye_core`.
 | Firmware | `main/app_main.c`, board/app/UI/core components, `sdkconfig.defaults`, `partitions.csv`, pinned manifests and `dependencies.lock` |
 | QA | `tests/unit`, `tests/integration`, `tests/ui`, fixtures and mock tests; `docs/test-plan.md`, `test-results.md`, `hardware-validation.md` |
 | DevOps/release | `.github/workflows/ci.yml`, executable `scripts/`, `docs/build.md`, `release.md`, `flashing.md`, release notes and local versioned artifacts |
-| Independent review | Final independent gate review pending; manual QA and previous review corrections are recorded in `docs/engineering-report.md` |
+| Independent review | Direct review of 92 supplied files returned REJECT; three findings are deferred in `docs/backlog.md`, with scope in `docs/independent-review.md` |
 
 Paths in the documentation column without a directory prefix are relative to
 `docs/`. Separate display/touch/backend/control directories were consolidated
@@ -67,9 +68,9 @@ into owning components rather than left as empty stubs.
 | Static analysis and formatting | `scripts/format.sh --check`, `scripts/static_analysis.sh`, Python ruff, `shellcheck scripts/*.sh`, `actionlint .github/workflows/ci.yml` passed |
 | Physical-board evidence | Verified flash hashes and boot logs; display/GT911 init, automatic Wi-Fi/DHCP, NVS reload and real telemetry; five PNGs in `docs/screenshots/` |
 | Screenshot access and locking | Actual protected Controls request returned 503; monitoring capture and display `/health`/`/metrics` passed; diagram in `docs/diagrams/screenshot-flow.md` |
-| Credential and publication boundary | Initial 147 tracked files checked against real local SSID/password and serial; private profile, sdkconfig, caches, managed dependencies and provisioned build/dist artifacts excluded |
+| Credential and publication boundary | 152 tracked files checked against real local SSID/password and serial after the build corrections; private profile, sdkconfig, caches, managed dependencies and provisioned build/dist artifacts excluded |
 | License compliance | Apache-2.0 `LICENSE`, `NOTICE`, vendor attribution; release packaging includes project and dependency license files |
-| GitHub CI and downloadable artifacts | Initial run `44736051481` passed lint/static/unit jobs but exposed the clean-configure SDK bug below; corrected end-to-end CI result pending |
+| GitHub CI and downloadable artifacts | Run `44744552799` for `b5d2f5a` passed all four jobs, strict lock comparison, packaging/image validation and upload; artifact `14632149750` (`deye-hmi-firmware`), 4,101,994 bytes |
 | Final report and honest categories | `docs/engineering-report.md` has all fourteen required sections, including exact build/flash commands, API mappings, binary locations, tests, limitations, hardware and control status |
 
 The runtime source was built/flashed and captured before the audit updates.
@@ -100,7 +101,8 @@ The second CI run completed firmware compilation but detected hash-scalar
 wrapping differences between ARM64 and AMD64 YAML emitters. The local SDK
 reports `WITH_LIBYAML=False`. `component-manager-yaml.patch` explicitly selects
 the Python emitter on both architectures; no lock value or CI comparison is
-relaxed. The corrected cross-platform CI result remains pending.
+relaxed. Cross-platform CI run `44744552799` passed, including the unchanged
+byte-for-byte lock gate and release upload.
 
 ## Explicitly unresolved acceptance checks
 
@@ -111,3 +113,11 @@ manual provisioning, network fault recovery on hardware, screen wake,
 static IPv4, OTA/rollback, factory reset and long-running heap stability remain
 hardware-unverified. No inverter writes, automated replay, register discovery
 writes or Raspberry Pi changes are part of this delivery.
+
+## Deferred review findings
+
+The final review found PIN-dialog expiry, endpoint-change isolation and
+non-deterministic release packaging issues. They remain open in
+`docs/backlog.md`. The latest delivery scope defers those fixes; closing this
+delivery is not a claim that the findings or production-acceptance gate passed.
+No runtime code was changed after the reviewed/CI-tested source revision.
