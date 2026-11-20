@@ -1,11 +1,14 @@
 # Build
 
 The default helper builds the local `deye-hmi-idf:5.5.1` image from the pinned
-`espressif/idf:v5.5.1` base. Its only SDK patch excludes already-managed
+`espressif/idf:v5.5.1` base. Its SDK CMake patch excludes already-managed
 components from the local-root dependency list on configure reruns.
 Without that filter, a clean Kconfig-dependent configure can reinterpret
 registry components as local overrides and replace the pinned LVGL release.
-The Docker build context contains only the Dockerfile and that patch.
+The Component Manager also uses an explicitly selected Python YAML emitter:
+The validated ARM64 image lacks the optional C emitter; AMD64 CI produced
+different scalar wrapping. Selecting one emitter keeps the lock byte-identical without relaxing
+the CI lock check. The build context contains only the Dockerfile and patches.
 
 `IDF_IMAGE` may select a prebuilt compatible image; setting it skips the local
 image build. A stock, unpatched image does not provide the same build contract.

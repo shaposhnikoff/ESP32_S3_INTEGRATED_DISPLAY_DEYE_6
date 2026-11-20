@@ -96,6 +96,12 @@ The lock file retains the manager's canonical serialization, including its
 generated whitespace, so CI can require a byte-for-byte unchanged lock after
 configuration and compilation.
 
+The second CI run completed firmware compilation but detected hash-scalar
+wrapping differences between ARM64 and AMD64 YAML emitters. The local SDK
+reports `WITH_LIBYAML=False`. `component-manager-yaml.patch` explicitly selects
+the Python emitter on both architectures; no lock value or CI comparison is
+relaxed. The corrected cross-platform CI result remains pending.
+
 ## Explicitly unresolved acceptance checks
 
 The missing write API, per-parameter firmware/register/persistence verification,

@@ -18,7 +18,7 @@ Results from the final development checks and the connected 5B board.
 | Clean-configure dependency regression | unpatched SDK: 16 -> 25 dependencies and LVGL 9.6.0; patched SDK: 16 -> 16 and LVGL 9.3.0; same source revision |
 | Patched helper build and canonical lock preservation | build exited 0; lock byte-for-byte equal to clean patched configure |
 | License delivery in release archive | project `LICENSE`/`NOTICE` and LVGL/dependency license files verified inside tar.gz |
-| GitHub Actions | initial run `44736051481`: lint/static/unit passed, firmware exposed the SDK rerun bug; corrected run pending |
+| GitHub Actions | run `44736051481` exposed the SDK rerun bug; run `44741607457` compiled successfully but detected cross-platform YAML wrapping; deterministic-emitter rerun pending |
 | Flash via native USB-Serial/JTAG | **passed**, image hashes verified, automatic reset |
 | Boot, RGB display, GT911 initialization | **passed** in boot logs |
 | File profile, NVS reload, automatic Wi-Fi/DHCP and real telemetry | **passed** in boot logs and device captures |

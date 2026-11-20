@@ -1,0 +1,7 @@
+--- a/manager.py
++++ b/manager.py
+@@ -1,3 +1,3 @@
+         self._path = path
+-        self._yaml = YAML(typ='safe')
++        self._yaml = YAML(typ='safe', pure=True)
+         self._yaml.default_flow_style = False

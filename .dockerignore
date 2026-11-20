@@ -2,3 +2,4 @@
 !Dockerfile
 !patches/
 !patches/esp-idf-managed-components.patch
+!patches/component-manager-yaml.patch
