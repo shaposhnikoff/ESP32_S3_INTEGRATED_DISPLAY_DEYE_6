@@ -4,6 +4,8 @@
 2. Tag `v<version>` and push. CI builds, validates the image header (project
    name, version, hash), packages `dist/` and publishes a GitHub release with
    the full image, the OTA image (`deye_hmi.bin`) and `SHA256SUMS`.
+   The archive also includes `LICENSE`, `NOTICE` and collected dependency
+   license files under `licenses/`.
 
 ## OTA
 

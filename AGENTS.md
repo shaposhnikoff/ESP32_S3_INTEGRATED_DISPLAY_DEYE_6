@@ -28,7 +28,7 @@ Project rules for coding agents. Global rules still apply.
 scripts/host_tests.sh          # unit + mock tests
 scripts/format.sh --check      # clang-format 19.1.7
 scripts/static_analysis.sh     # cppcheck
-scripts/idf.sh build           # firmware (Docker espressif/idf:v5.5.1)
+scripts/idf.sh build           # project Dockerfile, based on espressif/idf:v5.5.1
 scripts/package_release.sh
 ```
 

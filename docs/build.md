@@ -1,5 +1,15 @@
 # Build
 
+The default helper builds the local `deye-hmi-idf:5.5.1` image from the pinned
+`espressif/idf:v5.5.1` base. Its only SDK patch excludes already-managed
+components from the local-root dependency list on configure reruns.
+Without that filter, a clean Kconfig-dependent configure can reinterpret
+registry components as local overrides and replace the pinned LVGL release.
+The Docker build context contains only the Dockerfile and that patch.
+
+`IDF_IMAGE` may select a prebuilt compatible image; setting it skips the local
+image build. A stock, unpatched image does not provide the same build contract.
+
 Requirements: Docker (or a native ESP-IDF v5.5.1 install). The pinned image
 `espressif/idf:v5.5.1` is used locally and in CI.
 

@@ -1,0 +1,17 @@
+--- a/tools/cmake/build.cmake
++++ b/tools/cmake/build.cmake
+@@ -593,11 +593,13 @@
+         foreach(__build_component_target ${build_component_targets})
+             __component_get_property(__component_name ${__build_component_target} COMPONENT_NAME)
+             __component_get_property(__component_dir ${__build_component_target} COMPONENT_DIR)
++            __component_get_property(__component_source ${__build_component_target} COMPONENT_SOURCE)
+ 
+             # Exclude components could be passed with -DEXCLUDE_COMPONENTS
+             # after the call to __component_add finished in the last run.
+             # Need to check if the component is excluded again
+-            if(NOT __component_name IN_LIST EXCLUDE_COMPONENTS)
++            if(NOT __component_name IN_LIST EXCLUDE_COMPONENTS AND
++               NOT __component_source STREQUAL "project_managed_components")
+                 set(__contents "${__contents}  - name: \"${__component_name}\"\n    path: \"${__component_dir}\"\n")
+             endif()
+         endforeach()

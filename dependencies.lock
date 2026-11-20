@@ -1,6 +1,6 @@
 dependencies:
   espressif/button:
-    component_hash:
+    component_hash: 
       26345e8700d3c6435925f9a8f246d224f9c1b99f937c243fe400844eec514b4a
     dependencies:
     - name: espressif/cmake_utilities
@@ -15,7 +15,7 @@ dependencies:
       type: service
     version: 4.2.3
   espressif/cmake_utilities:
-    component_hash:
+    component_hash: 
       351350613ceafba240b761b4ea991e0f231ac7a9f59a9ee901f751bddc0bb18f
     dependencies:
     - name: idf
@@ -26,7 +26,7 @@ dependencies:
       type: service
     version: 0.5.3
   espressif/esp_lcd_touch:
-    component_hash:
+    component_hash: 
       3f85a7d95af876f1a6ecca8eb90a81614890d0f03a038390804e5a77e2caf862
     dependencies:
     - name: idf
@@ -37,7 +37,7 @@ dependencies:
       type: service
     version: 1.2.1
   espressif/esp_lcd_touch_gt911:
-    component_hash:
+    component_hash: 
       acc1c184358aa29ef72506f618c9c76a8cc2bf12af38a2bff3d44d84f3a08857
     dependencies:
     - name: espressif/esp_lcd_touch
@@ -52,7 +52,7 @@ dependencies:
       type: service
     version: 1.1.3
   espressif/esp_lv_decoder:
-    component_hash:
+    component_hash: 
       e516e65106a78e973d031c8125441b8a9bf2deaefd7dfb06db47eb3de20827ec
     dependencies:
     - name: espressif/esp_new_jpeg
@@ -91,7 +91,7 @@ dependencies:
     - esp32h4
     version: 0.5.1
   espressif/esp_lv_fs:
-    component_hash:
+    component_hash: 
       66896007884b817df34c964f9a114fff538ee2674e99fee7159162498b93f94b
     dependencies:
     - name: espressif/cmake_utilities
@@ -114,7 +114,7 @@ dependencies:
       type: service
     version: 1.0.1
   espressif/esp_lvgl_adapter:
-    component_hash:
+    component_hash: 
       2337a79a603c0abf76a5830b4a543d57c051fe40483c4304635f12e62ad1ef04
     dependencies:
     - name: espressif/button
@@ -153,7 +153,7 @@ dependencies:
       type: service
     version: 0.5.2
   espressif/esp_mmap_assets:
-    component_hash:
+    component_hash: 
       42310c362596de2a37248c2937b1754bc29cd0356b9839e2a77cf791e6bcdde1
     dependencies:
     - name: espressif/cmake_utilities
@@ -168,7 +168,7 @@ dependencies:
       type: service
     version: 2.0.1
   espressif/esp_new_jpeg:
-    component_hash:
+    component_hash: 
       e1e7e6991193c41ed6c9fc386702aa7821433319e7aa9c3147cd3236310cd69c
     dependencies: []
     source:
@@ -188,7 +188,7 @@ dependencies:
     - esp32h4
     version: 1.0.2
   espressif/freetype:
-    component_hash:
+    component_hash: 
       f31808b6826df6aa58713e7fc7bcdafaa9c28fab47d2b9e9684dac6d89e3aea3
     dependencies:
     - name: idf
@@ -199,7 +199,7 @@ dependencies:
       type: service
     version: 2.15.0
   espressif/knob:
-    component_hash:
+    component_hash: 
       b56694054cd34a683ac2a6f3661963ba00b1dab741a4f3bb59ed6666cbc9f3fb
     dependencies:
     - name: espressif/cmake_utilities
@@ -214,7 +214,7 @@ dependencies:
       type: service
     version: 1.1.0
   espressif/libpng:
-    component_hash:
+    component_hash: 
       7c9bc5c7b53e3a415855192732a75661b2a8f99ffc37b2dc354484b904d0c53a
     dependencies:
     - name: idf
@@ -229,7 +229,7 @@ dependencies:
       type: service
     version: 1.6.59~1
   espressif/qoi:
-    component_hash:
+    component_hash: 
       a6ba68ee51fabb676458c70b5203e4322b00eabaceecbc969bde360e41d4e304
     dependencies:
     - name: idf
@@ -240,7 +240,7 @@ dependencies:
       type: service
     version: 0.20260529.0
   espressif/zlib:
-    component_hash:
+    component_hash: 
       93685dbbacd6fd620b2b7bcbfac628c4f1289e64f7a68fc7604e43dec517595e
     dependencies:
     - name: idf
@@ -255,7 +255,7 @@ dependencies:
       type: idf
     version: 5.5.1
   lvgl/lvgl:
-    component_hash:
+    component_hash: 
       b702d642e03e95928046d5c6726558e6444e112420c77efa5fdb6650b0a13c5d
     dependencies: []
     source:

@@ -15,7 +15,10 @@ Results from the final development checks and the connected 5B board.
 | Firmware build (espressif/idf:v5.5.1, `-Wall -Wextra -Werror` on first-party code) | success, 0 warnings |
 | App image | 1,643,584 B, 61 % of the 4 MB slot free |
 | Release packaging + image validation (project name, version 0.1.0, hash valid) | pass |
-| GitHub Actions | See the repository Actions tab; not included in the local results above |
+| Clean-configure dependency regression | unpatched SDK: 16 -> 25 dependencies and LVGL 9.6.0; patched SDK: 16 -> 16 and LVGL 9.3.0; same source revision |
+| Patched helper build and canonical lock preservation | build exited 0; lock byte-for-byte equal to clean patched configure |
+| License delivery in release archive | project `LICENSE`/`NOTICE` and LVGL/dependency license files verified inside tar.gz |
+| GitHub Actions | initial run `44736051481`: lint/static/unit passed, firmware exposed the SDK rerun bug; corrected run pending |
 | Flash via native USB-Serial/JTAG | **passed**, image hashes verified, automatic reset |
 | Boot, RGB display, GT911 initialization | **passed** in boot logs |
 | File profile, NVS reload, automatic Wi-Fi/DHCP and real telemetry | **passed** in boot logs and device captures |
@@ -37,6 +40,10 @@ Static checks: `scripts/format.sh --check`, `scripts/static_analysis.sh`,
 `shellcheck scripts/*.sh`, and `actionlint .github/workflows/ci.yml`.
 cppcheck ran in Ubuntu 24.04. Firmware build and packaging commands were
 `scripts/idf.sh build` and `scripts/package_release.sh`; both exited 0.
+
+The clean-build regression is fixed in the project Dockerfile's SDK CMake
+filter, not by changing LVGL versions or suppressing compiler diagnostics.
+See completion-audit.md for the failure mechanism and toggle evidence.
 
 Container activation printed a non-fatal warning that UID 501 has no username
 inside the image; compilation and packaging succeeded.

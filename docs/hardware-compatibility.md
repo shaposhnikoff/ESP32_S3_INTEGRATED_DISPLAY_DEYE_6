@@ -15,9 +15,13 @@ needs different timings (`board_ws5b.c`) and is not supported by this build.
 | USB D-/D+ | 19 / 20 | docs |
 
 Panel: 1024x600 RGB565, PCLK 21 MHz, porches as in research.md.
-Memory: 2 framebuffers of 1.2 MB each in PSRAM (count chosen by
-`esp_lv_adapter_get_required_frame_buffer_count`).
+Memory: the framebuffer count is chosen by
+`esp_lv_adapter_get_required_frame_buffer_count`; the validated boot allocated
+three RGB565 framebuffers of approximately 1.2 MB each in PSRAM.
 
 Power: USB-C 5 V or 7-36 V DC terminal (board docs).
 
-Validation status: **build-verified only**. See hardware-validation.md.
+Validation status: **built, flashed and partially hardware-validated**.
+Display/touch initialization, automatic Wi-Fi, live telemetry and actual
+1024x600 device captures passed. Physical touch accuracy, flicker inspection
+and long-duration testing remain pending. See hardware-validation.md.

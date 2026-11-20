@@ -54,7 +54,10 @@ scripts/idf.sh build
 scripts/package_release.sh
 ```
 
-The pinned build container is `espressif/idf:v5.5.1`.
+The project Dockerfile builds `deye-hmi-idf:5.5.1` from the pinned
+`espressif/idf:v5.5.1` base. A minimal SDK CMake filter prevents managed
+components becoming local overrides during configure reruns; dependency
+versions and compiler warning checks remain unchanged.
 Host tests additionally need CMake and a C compiler:
 
 ```bash

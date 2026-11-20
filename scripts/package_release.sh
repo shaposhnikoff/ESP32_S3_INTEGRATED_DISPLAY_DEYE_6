@@ -3,10 +3,17 @@
 # Run after a successful firmware build (scripts/idf.sh build).
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
-IDF_IMAGE="${IDF_IMAGE:-espressif/idf:v5.5.1}"
+IDF_IMAGE="${IDF_IMAGE:-deye-hmi-idf:5.5.1}"
 VERSION="$(tr -d '[:space:]' < version.txt)"
 OUT="dist/deye-hmi-${VERSION}"
 mkdir -p "${OUT}"
+cp LICENSE NOTICE "${OUT}/"
+while IFS= read -r license; do
+    dest="${OUT}/licenses/${license#managed_components/}"
+    mkdir -p "$(dirname "${dest}")"
+    cp "${license}" "${dest}"
+done < <(find managed_components -type f \( -iname 'license*' -o -iname 'licence*' \
+    -o -iname 'copying*' -o -iname 'ftl.txt' -o -iname 'notice*' -o -iname 'copyright*' \) | sort)
 
 for f in build/bootloader/bootloader.bin build/partition_table/partition-table.bin \
          build/ota_data_initial.bin build/deye_hmi.bin build/flash_args; do
