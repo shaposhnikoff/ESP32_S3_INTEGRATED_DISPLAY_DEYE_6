@@ -1,0 +1,302 @@
+# HELP deye_daily_battery_charge_kwh Daily Battery Charge
+# TYPE deye_daily_battery_charge_kwh gauge
+deye_daily_battery_charge_kwh{group="battery",serial="TEST000001"} 0.4
+# HELP deye_daily_battery_discharge_kwh Daily Battery Discharge
+# TYPE deye_daily_battery_discharge_kwh gauge
+deye_daily_battery_discharge_kwh{group="battery",serial="TEST000001"} 0.8
+# HELP deye_total_battery_charge_kwh Total Battery Charge
+# TYPE deye_total_battery_charge_kwh gauge
+deye_total_battery_charge_kwh{group="battery",serial="TEST000001"} 303.8
+# HELP deye_total_battery_discharge_kwh Total Battery Discharge
+# TYPE deye_total_battery_discharge_kwh gauge
+deye_total_battery_discharge_kwh{group="battery",serial="TEST000001"} 251.8
+# HELP deye_battery_temperature_celsius Battery Temperature
+# TYPE deye_battery_temperature_celsius gauge
+deye_battery_temperature_celsius{group="battery",serial="TEST000001"} 20.0
+# HELP deye_battery_voltage_volts Battery Voltage
+# TYPE deye_battery_voltage_volts gauge
+deye_battery_voltage_volts{group="battery",serial="TEST000001"} 53.05
+# HELP deye_battery_percent Battery
+# TYPE deye_battery_percent gauge
+deye_battery_percent{group="battery",serial="TEST000001"} 94.0
+# HELP deye_battery_power_watts Battery Power
+# TYPE deye_battery_power_watts gauge
+deye_battery_power_watts{group="battery",serial="TEST000001"} 738.0
+# HELP deye_battery_current_amperes Battery Current
+# TYPE deye_battery_current_amperes gauge
+deye_battery_current_amperes{group="battery",serial="TEST000001"} 13.93
+# HELP deye_device_modbus_address Device Modbus Address
+# TYPE deye_device_modbus_address gauge
+deye_device_modbus_address{group="device",serial="TEST000001"} 1.0
+# HELP deye_device_rated_power_watts Device Rated Power
+# TYPE deye_device_rated_power_watts gauge
+deye_device_rated_power_watts{group="device",serial="TEST000001"} 6000.0
+# HELP deye_device_mppts Device MPPTs
+# TYPE deye_device_mppts gauge
+deye_device_mppts{group="device",serial="TEST000001"} 2.0
+# HELP deye_device_phases Device Phases
+# TYPE deye_device_phases gauge
+deye_device_phases{group="device",serial="TEST000001"} 1.0
+# HELP deye_grid_connected_status Grid Connected Status
+# TYPE deye_grid_connected_status gauge
+deye_grid_connected_status{group="device",serial="TEST000001"} 0.0
+# HELP deye_daily_energy_bought_kwh Daily Energy Bought
+# TYPE deye_daily_energy_bought_kwh gauge
+deye_daily_energy_bought_kwh{group="grid",serial="TEST000001"} 0.6
+# HELP deye_daily_energy_sold_kwh Daily Energy Sold
+# TYPE deye_daily_energy_sold_kwh gauge
+deye_daily_energy_sold_kwh{group="grid",serial="TEST000001"} 0.0
+# HELP deye_grid_frequency_hertz Grid Frequency
+# TYPE deye_grid_frequency_hertz gauge
+deye_grid_frequency_hertz{group="grid",serial="TEST000001"} 0.0
+# HELP deye_total_energy_sold_kwh Total Energy Sold
+# TYPE deye_total_energy_sold_kwh gauge
+deye_total_energy_sold_kwh{group="grid",serial="TEST000001"} 0.0
+# HELP deye_grid_l1_voltage_volts Grid L1 Voltage
+# TYPE deye_grid_l1_voltage_volts gauge
+deye_grid_l1_voltage_volts{group="grid",serial="TEST000001"} 4.9
+# HELP deye_grid_l2_voltage_volts Grid L2 Voltage
+# TYPE deye_grid_l2_voltage_volts gauge
+deye_grid_l2_voltage_volts{group="grid",serial="TEST000001"} 0.0
+# HELP deye_grid_voltage_volts Grid Voltage
+# TYPE deye_grid_voltage_volts gauge
+deye_grid_voltage_volts{group="grid",serial="TEST000001"} 4.9
+# HELP deye_external_ct_l1_current_amperes External CT L1 Current
+# TYPE deye_external_ct_l1_current_amperes gauge
+deye_external_ct_l1_current_amperes{group="grid",serial="TEST000001"} 0.0
+# HELP deye_external_ct_l2_current_amperes External CT L2 Current
+# TYPE deye_external_ct_l2_current_amperes gauge
+deye_external_ct_l2_current_amperes{group="grid",serial="TEST000001"} 0.0
+# HELP deye_grid_l1_power_watts Grid L1 Power
+# TYPE deye_grid_l1_power_watts gauge
+deye_grid_l1_power_watts{group="grid",serial="TEST000001"} 0.0
+# HELP deye_grid_l2_power_watts Grid L2 Power
+# TYPE deye_grid_l2_power_watts gauge
+deye_grid_l2_power_watts{group="grid",serial="TEST000001"} 0.0
+# HELP deye_grid_power_watts Grid Power
+# TYPE deye_grid_power_watts gauge
+deye_grid_power_watts{group="grid",serial="TEST000001"} 0.0
+# HELP deye_external_ct_l1_power_watts External CT L1 Power
+# TYPE deye_external_ct_l1_power_watts gauge
+deye_external_ct_l1_power_watts{group="grid",serial="TEST000001"} 0.0
+# HELP deye_external_ct_l2_power_watts External CT L2 Power
+# TYPE deye_external_ct_l2_power_watts gauge
+deye_external_ct_l2_power_watts{group="grid",serial="TEST000001"} 0.0
+# HELP deye_external_ct_power_watts External CT Power
+# TYPE deye_external_ct_power_watts gauge
+deye_external_ct_power_watts{group="grid",serial="TEST000001"} 0.0
+# HELP deye_dc_temperature_celsius DC Temperature
+# TYPE deye_dc_temperature_celsius gauge
+deye_dc_temperature_celsius{group="inverter",serial="TEST000001"} 43.4
+# HELP deye_ac_temperature_celsius AC Temperature
+# TYPE deye_ac_temperature_celsius gauge
+deye_ac_temperature_celsius{group="inverter",serial="TEST000001"} 40.9
+# HELP deye_output_l1_voltage_volts Output L1 Voltage
+# TYPE deye_output_l1_voltage_volts gauge
+deye_output_l1_voltage_volts{group="inverter",serial="TEST000001"} 230.0
+# HELP deye_output_l2_voltage_volts Output L2 Voltage
+# TYPE deye_output_l2_voltage_volts gauge
+deye_output_l2_voltage_volts{group="inverter",serial="TEST000001"} 0.0
+# HELP deye_output_l1_current_amperes Output L1 Current
+# TYPE deye_output_l1_current_amperes gauge
+deye_output_l1_current_amperes{group="inverter",serial="TEST000001"} 5.2
+# HELP deye_output_l2_current_amperes Output L2 Current
+# TYPE deye_output_l2_current_amperes gauge
+deye_output_l2_current_amperes{group="inverter",serial="TEST000001"} 0.0
+# HELP deye_output_l1_power_watts Output L1 Power
+# TYPE deye_output_l1_power_watts gauge
+deye_output_l1_power_watts{group="inverter",serial="TEST000001"} 729.0
+# HELP deye_output_l2_power_watts Output L2 Power
+# TYPE deye_output_l2_power_watts gauge
+deye_output_l2_power_watts{group="inverter",serial="TEST000001"} 0.0
+# HELP deye_output_power_watts Output Power
+# TYPE deye_output_power_watts gauge
+deye_output_power_watts{group="inverter",serial="TEST000001"} 729.0
+# HELP deye_output_frequency_hertz Output Frequency
+# TYPE deye_output_frequency_hertz gauge
+deye_output_frequency_hertz{group="inverter",serial="TEST000001"} 50.0
+# HELP deye_daily_load_consumption_kwh Daily Load Consumption
+# TYPE deye_daily_load_consumption_kwh gauge
+deye_daily_load_consumption_kwh{group="load",serial="TEST000001"} 1.1
+# HELP deye_total_consumption_kwh Total Consumption
+# TYPE deye_total_consumption_kwh gauge
+deye_total_consumption_kwh{group="load",serial="TEST000001"} 280.4
+# HELP deye_load_l1_voltage_volts Load L1 Voltage
+# TYPE deye_load_l1_voltage_volts gauge
+deye_load_l1_voltage_volts{group="load",serial="TEST000001"} 232.7
+# HELP deye_load_l2_voltage_volts Load L2 Voltage
+# TYPE deye_load_l2_voltage_volts gauge
+deye_load_l2_voltage_volts{group="load",serial="TEST000001"} 0.0
+# HELP deye_load_l1_power_watts Load L1 Power
+# TYPE deye_load_l1_power_watts gauge
+deye_load_l1_power_watts{group="load",serial="TEST000001"} 729.0
+# HELP deye_load_l2_power_watts Load L2 Power
+# TYPE deye_load_l2_power_watts gauge
+deye_load_l2_power_watts{group="load",serial="TEST000001"} 0.0
+# HELP deye_load_power_watts Load Power
+# TYPE deye_load_power_watts gauge
+deye_load_power_watts{group="load",serial="TEST000001"} 729.0
+# HELP deye_load_l1_current_amperes Load L1 Current
+# TYPE deye_load_l1_current_amperes gauge
+deye_load_l1_current_amperes{group="load",serial="TEST000001"} 7.29
+# HELP deye_load_l2_current_amperes Load L2 Current
+# TYPE deye_load_l2_current_amperes gauge
+deye_load_l2_current_amperes{group="load",serial="TEST000001"} 0.0
+# HELP deye_load_frequency_hertz Load Frequency
+# TYPE deye_load_frequency_hertz gauge
+deye_load_frequency_hertz{group="load",serial="TEST000001"} 50.0
+# HELP deye_total_pv_production_kwh Total PV Production
+# TYPE deye_total_pv_production_kwh gauge
+deye_total_pv_production_kwh{group="pv",serial="TEST000001"} 37.4
+# HELP deye_daily_pv_production_kwh Daily PV Production
+# TYPE deye_daily_pv_production_kwh gauge
+deye_daily_pv_production_kwh{group="pv",serial="TEST000001"} 0.0
+# HELP deye_pv1_voltage_volts PV1 Voltage
+# TYPE deye_pv1_voltage_volts gauge
+deye_pv1_voltage_volts{group="pv",serial="TEST000001"} 134.8
+# HELP deye_pv1_current_amperes PV1 Current
+# TYPE deye_pv1_current_amperes gauge
+deye_pv1_current_amperes{group="pv",serial="TEST000001"} 0.0
+# HELP deye_pv2_voltage_volts PV2 Voltage
+# TYPE deye_pv2_voltage_volts gauge
+deye_pv2_voltage_volts{group="pv",serial="TEST000001"} 1.5
+# HELP deye_pv2_current_amperes PV2 Current
+# TYPE deye_pv2_current_amperes gauge
+deye_pv2_current_amperes{group="pv",serial="TEST000001"} 0.0
+# HELP deye_pv3_voltage_volts PV3 Voltage
+# TYPE deye_pv3_voltage_volts gauge
+deye_pv3_voltage_volts{group="pv",serial="TEST000001"} 0.0
+# HELP deye_pv3_current_amperes PV3 Current
+# TYPE deye_pv3_current_amperes gauge
+deye_pv3_current_amperes{group="pv",serial="TEST000001"} 0.0
+# HELP deye_pv4_voltage_volts PV4 Voltage
+# TYPE deye_pv4_voltage_volts gauge
+deye_pv4_voltage_volts{group="pv",serial="TEST000001"} 0.0
+# HELP deye_pv4_current_amperes PV4 Current
+# TYPE deye_pv4_current_amperes gauge
+deye_pv4_current_amperes{group="pv",serial="TEST000001"} 0.0
+# HELP deye_pv1_power_watts PV1 Power
+# TYPE deye_pv1_power_watts gauge
+deye_pv1_power_watts{group="pv",serial="TEST000001"} 2.0
+# HELP deye_pv2_power_watts PV2 Power
+# TYPE deye_pv2_power_watts gauge
+deye_pv2_power_watts{group="pv",serial="TEST000001"} 0.0
+# HELP deye_pv3_power_watts PV3 Power
+# TYPE deye_pv3_power_watts gauge
+deye_pv3_power_watts{group="pv",serial="TEST000001"} 0.0
+# HELP deye_pv4_power_watts PV4 Power
+# TYPE deye_pv4_power_watts gauge
+deye_pv4_power_watts{group="pv",serial="TEST000001"} 0.0
+# HELP deye_tou_enabled Time of Use enabled
+# TYPE deye_tou_enabled gauge
+deye_tou_enabled{group="tou",serial="TEST000001"} 1
+# HELP deye_tou_day Time of Use day mon
+# TYPE deye_tou_day gauge
+deye_tou_day{group="tou",serial="TEST000001",day="mon"} 1
+deye_tou_day{group="tou",serial="TEST000001",day="tue"} 1
+deye_tou_day{group="tou",serial="TEST000001",day="wed"} 1
+deye_tou_day{group="tou",serial="TEST000001",day="thu"} 1
+deye_tou_day{group="tou",serial="TEST000001",day="fri"} 1
+deye_tou_day{group="tou",serial="TEST000001",day="sat"} 1
+deye_tou_day{group="tou",serial="TEST000001",day="sun"} 1
+# HELP deye_tou_slot_start_minutes Time of Use slot 1 start
+# TYPE deye_tou_slot_start_minutes gauge
+deye_tou_slot_start_minutes{group="tou",serial="TEST000001",slot="1"} 60
+# HELP deye_tou_slot_start_hhmm Time of Use slot 1 start HHMM
+# TYPE deye_tou_slot_start_hhmm gauge
+deye_tou_slot_start_hhmm{group="tou",serial="TEST000001",slot="1"} 100
+# HELP deye_tou_slot_power_watts Time of Use slot 1 power
+# TYPE deye_tou_slot_power_watts gauge
+deye_tou_slot_power_watts{group="tou",serial="TEST000001",slot="1"} 6000
+# HELP deye_tou_slot_voltage_volts Time of Use slot 1 voltage
+# TYPE deye_tou_slot_voltage_volts gauge
+deye_tou_slot_voltage_volts{group="tou",serial="TEST000001",slot="1"} 49.0
+# HELP deye_tou_slot_capacity_percent Time of Use slot 1 capacity
+# TYPE deye_tou_slot_capacity_percent gauge
+deye_tou_slot_capacity_percent{group="tou",serial="TEST000001",slot="1"} 99
+# HELP deye_tou_charge Time of Use slot 1 grid charge
+# TYPE deye_tou_charge gauge
+deye_tou_charge{group="tou",serial="TEST000001",slot="1",source="grid"} 1
+deye_tou_charge{group="tou",serial="TEST000001",slot="1",source="gen"} 1
+# HELP deye_tou_slot_info Time of Use slot 1 info
+# TYPE deye_tou_slot_info gauge
+deye_tou_slot_info{group="tou",serial="TEST000001",slot="1",start="01:00",power_w="6000",voltage_v="49.00",soc_pct="99",grid="on",gen="on",gm="on",bu="off",ch="off"} 1
+# HELP deye_tou_mode Time of Use slot 1 GM mode
+# TYPE deye_tou_mode gauge
+deye_tou_mode{group="tou",serial="TEST000001",slot="1",mode="gm"} 1
+deye_tou_mode{group="tou",serial="TEST000001",slot="1",mode="bu"} 0
+deye_tou_mode{group="tou",serial="TEST000001",slot="1",mode="ch"} 0
+deye_tou_slot_start_minutes{group="tou",serial="TEST000001",slot="2"} 420
+deye_tou_slot_start_hhmm{group="tou",serial="TEST000001",slot="2"} 700
+deye_tou_slot_power_watts{group="tou",serial="TEST000001",slot="2"} 6000
+deye_tou_slot_voltage_volts{group="tou",serial="TEST000001",slot="2"} 49.0
+deye_tou_slot_capacity_percent{group="tou",serial="TEST000001",slot="2"} 99
+deye_tou_charge{group="tou",serial="TEST000001",slot="2",source="grid"} 1
+deye_tou_charge{group="tou",serial="TEST000001",slot="2",source="gen"} 1
+deye_tou_slot_info{group="tou",serial="TEST000001",slot="2",start="07:00",power_w="6000",voltage_v="49.00",soc_pct="99",grid="on",gen="on",gm="on",bu="off",ch="off"} 1
+deye_tou_mode{group="tou",serial="TEST000001",slot="2",mode="gm"} 1
+deye_tou_mode{group="tou",serial="TEST000001",slot="2",mode="bu"} 0
+deye_tou_mode{group="tou",serial="TEST000001",slot="2",mode="ch"} 0
+deye_tou_slot_start_minutes{group="tou",serial="TEST000001",slot="3"} 540
+deye_tou_slot_start_hhmm{group="tou",serial="TEST000001",slot="3"} 900
+deye_tou_slot_power_watts{group="tou",serial="TEST000001",slot="3"} 6000
+deye_tou_slot_voltage_volts{group="tou",serial="TEST000001",slot="3"} 49.0
+deye_tou_slot_capacity_percent{group="tou",serial="TEST000001",slot="3"} 99
+deye_tou_charge{group="tou",serial="TEST000001",slot="3",source="grid"} 1
+deye_tou_charge{group="tou",serial="TEST000001",slot="3",source="gen"} 1
+deye_tou_slot_info{group="tou",serial="TEST000001",slot="3",start="09:00",power_w="6000",voltage_v="49.00",soc_pct="99",grid="on",gen="on",gm="on",bu="off",ch="off"} 1
+deye_tou_mode{group="tou",serial="TEST000001",slot="3",mode="gm"} 1
+deye_tou_mode{group="tou",serial="TEST000001",slot="3",mode="bu"} 0
+deye_tou_mode{group="tou",serial="TEST000001",slot="3",mode="ch"} 0
+deye_tou_slot_start_minutes{group="tou",serial="TEST000001",slot="4"} 780
+deye_tou_slot_start_hhmm{group="tou",serial="TEST000001",slot="4"} 1300
+deye_tou_slot_power_watts{group="tou",serial="TEST000001",slot="4"} 6000
+deye_tou_slot_voltage_volts{group="tou",serial="TEST000001",slot="4"} 49.0
+deye_tou_slot_capacity_percent{group="tou",serial="TEST000001",slot="4"} 99
+deye_tou_charge{group="tou",serial="TEST000001",slot="4",source="grid"} 1
+deye_tou_charge{group="tou",serial="TEST000001",slot="4",source="gen"} 1
+deye_tou_slot_info{group="tou",serial="TEST000001",slot="4",start="13:00",power_w="6000",voltage_v="49.00",soc_pct="99",grid="on",gen="on",gm="on",bu="off",ch="off"} 1
+deye_tou_mode{group="tou",serial="TEST000001",slot="4",mode="gm"} 1
+deye_tou_mode{group="tou",serial="TEST000001",slot="4",mode="bu"} 0
+deye_tou_mode{group="tou",serial="TEST000001",slot="4",mode="ch"} 0
+deye_tou_slot_start_minutes{group="tou",serial="TEST000001",slot="5"} 1020
+deye_tou_slot_start_hhmm{group="tou",serial="TEST000001",slot="5"} 1700
+deye_tou_slot_power_watts{group="tou",serial="TEST000001",slot="5"} 6000
+deye_tou_slot_voltage_volts{group="tou",serial="TEST000001",slot="5"} 49.0
+deye_tou_slot_capacity_percent{group="tou",serial="TEST000001",slot="5"} 99
+deye_tou_charge{group="tou",serial="TEST000001",slot="5",source="grid"} 1
+deye_tou_charge{group="tou",serial="TEST000001",slot="5",source="gen"} 1
+deye_tou_slot_info{group="tou",serial="TEST000001",slot="5",start="17:00",power_w="6000",voltage_v="49.00",soc_pct="99",grid="on",gen="on",gm="on",bu="off",ch="off"} 1
+deye_tou_mode{group="tou",serial="TEST000001",slot="5",mode="gm"} 1
+deye_tou_mode{group="tou",serial="TEST000001",slot="5",mode="bu"} 0
+deye_tou_mode{group="tou",serial="TEST000001",slot="5",mode="ch"} 0
+deye_tou_slot_start_minutes{group="tou",serial="TEST000001",slot="6"} 1380
+deye_tou_slot_start_hhmm{group="tou",serial="TEST000001",slot="6"} 2300
+deye_tou_slot_power_watts{group="tou",serial="TEST000001",slot="6"} 6000
+deye_tou_slot_voltage_volts{group="tou",serial="TEST000001",slot="6"} 49.0
+deye_tou_slot_capacity_percent{group="tou",serial="TEST000001",slot="6"} 99
+deye_tou_charge{group="tou",serial="TEST000001",slot="6",source="grid"} 1
+deye_tou_charge{group="tou",serial="TEST000001",slot="6",source="gen"} 1
+deye_tou_slot_info{group="tou",serial="TEST000001",slot="6",start="23:00",power_w="6000",voltage_v="49.00",soc_pct="99",grid="on",gen="on",gm="on",bu="off",ch="off"} 1
+deye_tou_mode{group="tou",serial="TEST000001",slot="6",mode="gm"} 1
+deye_tou_mode{group="tou",serial="TEST000001",slot="6",mode="bu"} 0
+deye_tou_mode{group="tou",serial="TEST000001",slot="6",mode="ch"} 0
+# HELP deye_running_status Inverter running status as a one-hot gauge
+# TYPE deye_running_status gauge
+deye_running_status{status="standby",serial="TEST000001"} 0
+deye_running_status{status="selfcheck",serial="TEST000001"} 0
+deye_running_status{status="normal",serial="TEST000001"} 1
+deye_running_status{status="alarm",serial="TEST000001"} 0
+deye_running_status{status="fault",serial="TEST000001"} 0
+# HELP deye_scrape_success 0 when the last Modbus poll succeeded
+# TYPE deye_scrape_success gauge
+deye_scrape_success 1
+# HELP deye_scrape_duration_seconds Duration of the last Modbus poll in seconds
+# TYPE deye_scrape_duration_seconds gauge
+deye_scrape_duration_seconds 1.238
+# HELP deye_last_successful_scrape_timestamp_seconds Unix timestamp of the last successful poll
+# TYPE deye_last_successful_scrape_timestamp_seconds gauge
+deye_last_successful_scrape_timestamp_seconds 1795172201
+# HELP deye_data_age_seconds Seconds since the last successful poll
+# TYPE deye_data_age_seconds gauge
+deye_data_age_seconds 600.0

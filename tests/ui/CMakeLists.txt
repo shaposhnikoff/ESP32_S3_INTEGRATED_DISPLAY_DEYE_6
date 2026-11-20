@@ -1,0 +1,18 @@
+cmake_minimum_required(VERSION 3.16)
+project(deye_ui_smoke C CXX ASM)
+set(CMAKE_C_STANDARD 11)
+set(ROOT "${CMAKE_CURRENT_LIST_DIR}/../..")
+set(LV_BUILD_CONF_PATH "${CMAKE_CURRENT_LIST_DIR}/lv_conf.h" CACHE PATH "" FORCE)
+set(CONFIG_LV_BUILD_DEMOS OFF CACHE BOOL "" FORCE)
+set(CONFIG_LV_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(CONFIG_LV_USE_THORVG_INTERNAL OFF CACHE BOOL "" FORCE)
+add_subdirectory("${ROOT}/managed_components/lvgl__lvgl" lvgl)
+add_subdirectory("${ROOT}/components/deye_core" deye_core)
+file(GLOB UI_SOURCES "${ROOT}/components/ui/*.c")
+add_executable(ui_smoke ui_smoke.c platform_fake.c ${UI_SOURCES})
+target_include_directories(ui_smoke PRIVATE stubs
+    "${ROOT}/components/ui/include" "${ROOT}/components/ui"
+    "${ROOT}/components/app/include" "${ROOT}/components/board/include")
+target_compile_options(ui_smoke PRIVATE -Wall -Wextra -Werror -fsanitize=address,undefined)
+target_link_options(ui_smoke PRIVATE -fsanitize=address,undefined)
+target_link_libraries(ui_smoke PRIVATE lvgl deye_core m)

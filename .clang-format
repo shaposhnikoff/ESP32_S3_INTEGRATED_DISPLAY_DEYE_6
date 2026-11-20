@@ -1,0 +1,14 @@
+# Project C style (ESP-IDF-like, 4-space indent, 120 columns)
+BasedOnStyle: LLVM
+IndentWidth: 4
+ColumnLimit: 120
+BreakBeforeBraces: Linux
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AlignConsecutiveMacros: false
+IndentCaseLabels: false
+PointerAlignment: Right
+SortIncludes: true
+IncludeBlocks: Preserve
+SpaceAfterCStyleCast: false

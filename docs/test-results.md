@@ -1,0 +1,42 @@
+# Test results (2026-11-20)
+
+Results from the final development checks and the connected 5B board.
+
+| Check | Result |
+|---|---|
+| Core unit tests, macOS clang + ASan/UBSan (`scripts/host_tests.sh`) | **304 checks, 0 failures; 1/1 CTest target passed** |
+| Mock backend and HTTP-to-C integration pytest | **13 passed** |
+| Real LVGL UI on host memory display, ASan/UBSan | **10 screens rendered; double-confirm, PIN expiry and capture-access regressions passed** |
+| ruff check / format (mock) | clean |
+| clang-format 19.1.7 `--check` | clean |
+| cppcheck 2.13 (warning, performance, portability) | 0 findings |
+| shellcheck 0.10 `scripts/*.sh` | clean |
+| actionlint 1.7.8 `.github/workflows/ci.yml` | clean |
+| Firmware build (espressif/idf:v5.5.1, `-Wall -Wextra -Werror` on first-party code) | success, 0 warnings |
+| App image | 1,643,584 B, 61 % of the 4 MB slot free |
+| Release packaging + image validation (project name, version 0.1.0, hash valid) | pass |
+| GitHub Actions | See the repository Actions tab; not included in the local results above |
+| Flash via native USB-Serial/JTAG | **passed**, image hashes verified, automatic reset |
+| Boot, RGB display, GT911 initialization | **passed** in boot logs |
+| File profile, NVS reload, automatic Wi-Fi/DHCP and real telemetry | **passed** in boot logs and device captures |
+| Device HTTP `/health`, `/metrics`, `/screenshot.bmp` | **passed**, real 1024x600 BMP frames converted to PNG |
+| Protected Controls capture | **503 rejected**, as intended |
+| Physical touch, 24 h soak, static IP, OTA/rollback | **not executed**, see hardware-validation.md |
+
+The host run used the already cached CMake binary on `PATH`; no global CMake
+installation was needed. The UI harness ran in the ESP-IDF container:
+
+```bash
+cmake -S tests/ui -B build-ui
+cmake --build build-ui -j 8
+mkdir -p build-ui/screens
+./build-ui/ui_smoke tests/fixtures/metrics_live_2026-11-20.txt build-ui/screens
+```
+
+Static checks: `scripts/format.sh --check`, `scripts/static_analysis.sh`,
+`shellcheck scripts/*.sh`, and `actionlint .github/workflows/ci.yml`.
+cppcheck ran in Ubuntu 24.04. Firmware build and packaging commands were
+`scripts/idf.sh build` and `scripts/package_release.sh`; both exited 0.
+
+Container activation printed a non-fatal warning that UID 501 has no username
+inside the image; compilation and packaging succeeded.

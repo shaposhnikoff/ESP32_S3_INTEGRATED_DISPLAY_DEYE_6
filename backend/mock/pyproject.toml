@@ -1,0 +1,27 @@
+[project]
+name = "deye-mock"
+version = "0.1.0"
+description = "Mock of the Deye Prometheus exporter for Deye HMI development and tests"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+deye-mock = "deye_mock.server:main"
+
+[dependency-groups]
+dev = ["pytest==8.4.2", "ruff==0.14.5"]
+
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "N"]
+ignore = ["S104"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "S310"]

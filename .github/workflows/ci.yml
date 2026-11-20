@@ -1,0 +1,119 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  UV_VERSION: "0.9.9"
+
+jobs:
+  lint:
+    name: Lint and format check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Install uv
+        run: pip install "uv==${UV_VERSION}"
+      - name: Python lint (mock backend)
+        working-directory: backend/mock
+        run: |
+          uv run --frozen ruff check .
+          uv run --frozen ruff format --check .
+      - name: C format check (clang-format 19.1.7)
+        run: scripts/format.sh --check
+
+  static-analysis:
+    name: Static analysis
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    needs: lint
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Install cppcheck
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq cppcheck
+      - name: cppcheck
+        run: scripts/static_analysis.sh
+
+  unit-tests:
+    name: Host unit tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    needs: lint
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Install uv
+        run: pip install "uv==${UV_VERSION}"
+      - name: Core tests (ASan/UBSan) and mock backend tests
+        run: scripts/host_tests.sh
+
+  firmware:
+    name: Firmware build (ESP32-S3-Touch-LCD-5B)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    needs: [static-analysis, unit-tests]
+    container:
+      image: espressif/idf:v5.5.1
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Build
+        shell: bash
+        run: |
+          . "$IDF_PATH/export.sh"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          idf.py set-target esp32s3
+          idf.py build
+          idf.py size
+      - name: Verify dependency lock unchanged
+        shell: bash
+        run: git diff --exit-code dependencies.lock
+      - name: Package and validate artifacts
+        shell: bash
+        run: |
+          . "$IDF_PATH/export.sh"
+          scripts/package_release.sh
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: deye-hmi-firmware
+          path: dist/
+          if-no-files-found: error
+          retention-days: 30
+
+  release:
+    name: Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    needs: firmware
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: deye-hmi-firmware
+          path: dist/
+      - name: Check tag matches version.txt
+        run: test "${GITHUB_REF_NAME#v}" = "$(tr -d '[:space:]' < version.txt)"
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="$(tr -d '[:space:]' < version.txt)"
+          gh release create "${GITHUB_REF_NAME}" \
+            --title "Deye HMI ${VERSION}" \
+            --notes-file "docs/release-notes/${VERSION}.md" \
+            "dist/deye-hmi-${VERSION}.tar.gz" \
+            "dist/deye-hmi-${VERSION}/deye-hmi-${VERSION}-full.bin" \
+            "dist/deye-hmi-${VERSION}/deye_hmi.bin" \
+            "dist/deye-hmi-${VERSION}/SHA256SUMS"

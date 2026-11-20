@@ -1,0 +1,38 @@
+menu "Deye HMI"
+
+    config DEYE_SCREENSHOT_HTTP
+        bool "Enable LAN screenshots and display diagnostics on HTTP port 80"
+        default y
+        select LV_USE_SNAPSHOT
+        help
+            Exposes the active monitoring screen as /screenshot.bmp, plus
+            /health and /metrics. Use only on a trusted LAN. Protected screens
+            and dialogs cannot be captured.
+
+    config DEYE_DEFAULT_BACKEND_HOST
+        string "Default backend host (empty = configure on device)"
+        default ""
+        help
+            Optional development default. Leave empty for release builds so no
+            network settings are hard-coded. Set it in sdkconfig.local, which is
+            not committed.
+
+    config DEYE_DEFAULT_BACKEND_PORT
+        int "Default backend port"
+        default 9101
+        range 1 65535
+
+    config DEYE_OTA_ALLOW_HTTP
+        bool "Allow firmware updates over plain HTTP (insecure)"
+        default n
+        select ESP_HTTPS_OTA_ALLOW_HTTP
+        help
+            Development only. When disabled, OTA URLs must use HTTPS and the
+            server certificate is verified against the bundled CA store.
+
+    config DEYE_TELEMETRY_MAX_BYTES
+        int "Maximum accepted /metrics payload size"
+        default 65536
+        range 8192 262144
+
+endmenu

@@ -1,0 +1,11 @@
+# Synthetic: corrupted / out-of-range values and malformed lines
+deye_battery_percent{group="battery",serial="X1"} 140.0
+deye_battery_voltage_volts{group="battery",serial="X1"} NaN
+deye_load_power_watts{group="load",serial="X1"} 500
+deye_grid_power_watts{group="grid",serial="X1"} +Inf
+deye_pv1_power_watts{group="pv",serial="X1"} 1200
+deye_pv2_power_watts{group="pv",serial="X1"} -5
+this line is not a metric
+deye_broken{unterminated="x 1
+deye_tou_slot_capacity_percent{group="tou",serial="X1",slot="9"} 50
+deye_running_status{status="exploded",serial="X1"} 1

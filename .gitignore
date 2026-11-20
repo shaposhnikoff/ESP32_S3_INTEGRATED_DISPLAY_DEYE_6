@@ -1,0 +1,16 @@
+build/
+build-*/
+managed_components/
+sdkconfig
+sdkconfig.old
+sdkconfig.local
+*.bin
+dist/
+__pycache__/
+.venv/
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+.idf-cache/
+config/network.local.h
+/plan,md
