@@ -153,6 +153,11 @@ bool im_parse_metrics(const char *text, size_t len, inverter_model_t *m);
 
 const char *im_run_status_name(im_run_status_t s);
 
+/* Estimated minutes to cutoff while discharging or to full while charging.
+ * Returns -1 when inputs are missing or battery power is near idle. */
+int32_t im_battery_eta_minutes(im_value_t soc_pct, im_value_t power_w, uint16_t capacity_wh, uint8_t cutoff_pct,
+                               bool *charging);
+
 static inline im_value_t im_val(float v)
 {
     im_value_t r = {v, true};

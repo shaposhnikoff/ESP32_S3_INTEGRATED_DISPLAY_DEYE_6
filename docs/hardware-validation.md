@@ -6,6 +6,14 @@ Boot logs confirm RGB display, GT911 initialization, saved NVS settings,
 automatic Wi-Fi connection, DHCP and the first successful telemetry fetch.
 Real on-device screenshots are in `docs/screenshots/`.
 
+On 2026-11-21 the glanceable Overview build was flashed over native USB
+serial using individual images, preserving NVS. The board booted, joined Wi-Fi
+at 192.168.10.24 and fetched live telemetry. `/health` returned OK, `/metrics`
+reported uptime, heap and PSRAM, and HTTP captures of Overview and Charts
+succeeded. `docs/screenshots/overview.png` is the live Overview
+capture. Touch, long-running stability, and the five alert states still need
+physical validation; their UI paths passed the host LVGL smoke harness.
+
 Checklist (record date, firmware version, result, notes):
 
 | # | Check | Result |

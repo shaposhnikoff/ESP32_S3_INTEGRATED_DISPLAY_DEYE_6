@@ -9,7 +9,8 @@ set(CONFIG_LV_USE_THORVG_INTERNAL OFF CACHE BOOL "" FORCE)
 add_subdirectory("${ROOT}/managed_components/lvgl__lvgl" lvgl)
 add_subdirectory("${ROOT}/components/deye_core" deye_core)
 file(GLOB UI_SOURCES "${ROOT}/components/ui/*.c")
-add_executable(ui_smoke ui_smoke.c platform_fake.c ${UI_SOURCES})
+file(GLOB FONT_SOURCES "${ROOT}/components/ui/fonts/deye_font_*.c")
+add_executable(ui_smoke ui_smoke.c platform_fake.c ${UI_SOURCES} ${FONT_SOURCES})
 target_include_directories(ui_smoke PRIVATE stubs
     "${ROOT}/components/ui/include" "${ROOT}/components/ui"
     "${ROOT}/components/app/include" "${ROOT}/components/board/include")

@@ -24,6 +24,9 @@ static const ui_screen_t *const k_screens[SCR_COUNT] = {
 
 static lv_obj_t *s_pages[SCR_COUNT];
 static lv_obj_t *s_nav_btns[SCR_COUNT];
+static lv_obj_t *s_status_bar;
+static lv_obj_t *s_more_btn;
+static lv_obj_t *s_more_panel;
 static ui_screen_id_t s_current = SCR_OVERVIEW;
 static app_snapshot_t s_snap;
 static uint32_t s_last_seq = UINT32_MAX;
@@ -86,12 +89,28 @@ static void show_screen(ui_screen_id_t id)
     for (int i = 0; i < SCR_COUNT; i++) {
         if (i == (int)id) {
             lv_obj_remove_flag(s_pages[i], LV_OBJ_FLAG_HIDDEN);
-            lv_obj_add_state(s_nav_btns[i], LV_STATE_CHECKED);
         } else {
             lv_obj_add_flag(s_pages[i], LV_OBJ_FLAG_HIDDEN);
-            lv_obj_remove_state(s_nav_btns[i], LV_STATE_CHECKED);
+        }
+        if (s_nav_btns[i] != NULL) {
+            if (i == (int)id) {
+                lv_obj_add_state(s_nav_btns[i], LV_STATE_CHECKED);
+            } else {
+                lv_obj_remove_state(s_nav_btns[i], LV_STATE_CHECKED);
+            }
         }
     }
+    if (id == SCR_OVERVIEW) {
+        lv_obj_add_flag(s_status_bar, LV_OBJ_FLAG_HIDDEN);
+    } else {
+        lv_obj_remove_flag(s_status_bar, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (s_nav_btns[id] == NULL) {
+        lv_obj_add_state(s_more_btn, LV_STATE_CHECKED);
+    } else {
+        lv_obj_remove_state(s_more_btn, LV_STATE_CHECKED);
+    }
+    lv_obj_add_flag(s_more_panel, LV_OBJ_FLAG_HIDDEN);
     s_current = id;
     lv_label_set_text(s_title, tr(k_screens[id]->title));
     s_force = true;
@@ -125,7 +144,10 @@ static void nav_cb(lv_event_t *e)
     memset(&settings, 0, sizeof(settings));
     if (k_screens[id]->protected_by_pin && locked) {
         /* keep the current tab highlighted */
-        lv_obj_remove_state(s_nav_btns[id], LV_STATE_CHECKED);
+        if (s_nav_btns[id] != NULL) {
+            lv_obj_remove_state(s_nav_btns[id], LV_STATE_CHECKED);
+        }
+        lv_obj_add_flag(s_more_panel, LV_OBJ_FLAG_HIDDEN);
         ui_text_input("Enter settings PIN", NULL, true, true, 8, pin_entered, (void *)(intptr_t)id);
         return;
     }
@@ -314,35 +336,83 @@ static lv_obj_t *build_status_bar(lv_obj_t *scr)
     return bar;
 }
 
+static void more_cb(lv_event_t *e)
+{
+    (void)e;
+    if (lv_obj_has_flag(s_more_panel, LV_OBJ_FLAG_HIDDEN)) {
+        lv_obj_remove_flag(s_more_panel, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_move_foreground(s_more_panel);
+    } else {
+        lv_obj_add_flag(s_more_panel, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
 static void build_nav(lv_obj_t *scr)
 {
     lv_obj_t *nav = lv_obj_create(scr);
     lv_obj_remove_style_all(nav);
-    lv_obj_set_size(nav, UI_NAV_W, UI_CONTENT_H);
-    lv_obj_set_pos(nav, 0, UI_STATUS_H);
-    lv_obj_set_style_bg_color(nav, g_pal.card, 0);
-    lv_obj_set_style_bg_opa(nav, LV_OPA_COVER, 0);
-    lv_obj_set_style_pad_all(nav, 4, 0);
-    ui_flex_col(nav, 2);
+    lv_obj_set_size(nav, UI_W, UI_NAV_H);
+    lv_obj_set_pos(nav, 0, UI_H - UI_NAV_H);
     lv_obj_remove_flag(nav, LV_OBJ_FLAG_SCROLLABLE);
 
-    const int32_t h = (UI_CONTENT_H - 8 - 2 * (SCR_COUNT - 1)) / SCR_COUNT;
-    for (int i = 0; i < SCR_COUNT; i++) {
+    static const ui_screen_id_t primary[] = {SCR_OVERVIEW, SCR_BATTERY, SCR_SOLAR, SCR_GRID, SCR_CHARTS, SCR_CONTROLS};
+    static const int32_t widths[] = {139, 139, 137, 178, 139, 139};
+    int32_t x = 16;
+    for (size_t n = 0; n < sizeof(primary) / sizeof(primary[0]); n++) {
+        const int i = primary[n];
         lv_obj_t *b = lv_button_create(nav);
-        lv_obj_set_size(b, UI_NAV_W - 8, h);
+        lv_obj_set_size(b, widths[n], 52);
+        lv_obj_set_pos(b, x, 0);
+        x += widths[n] + 8;
         lv_obj_add_flag(b, LV_OBJ_FLAG_CHECKABLE);
         lv_obj_set_style_bg_color(b, g_pal.card, 0);
         lv_obj_set_style_bg_color(b, g_pal.accent, LV_STATE_CHECKED);
         lv_obj_set_style_shadow_width(b, 0, 0);
-        lv_obj_set_style_radius(b, 8, 0);
+        lv_obj_set_style_radius(b, 12, 0);
         lv_obj_t *l = lv_label_create(b);
         lv_obj_set_style_text_font(l, &lv_font_montserrat_14, 0);
         lv_obj_set_style_text_color(l, g_pal.text, 0);
         lv_label_set_text_fmt(l, "%s  %s", k_screens[i]->icon, tr(k_screens[i]->title));
-        lv_obj_align(l, LV_ALIGN_LEFT_MID, 2, 0);
+        lv_obj_center(l);
         lv_obj_add_event_cb(b, nav_cb, LV_EVENT_CLICKED, (void *)(intptr_t)i);
         s_nav_btns[i] = b;
     }
+    s_more_btn = lv_button_create(nav);
+    lv_obj_set_size(s_more_btn, 72, 52);
+    lv_obj_set_pos(s_more_btn, x, 0);
+    lv_obj_set_style_bg_color(s_more_btn, g_pal.card, 0);
+    lv_obj_set_style_bg_color(s_more_btn, g_pal.accent, LV_STATE_CHECKED);
+    lv_obj_set_style_shadow_width(s_more_btn, 0, 0);
+    lv_obj_set_style_radius(s_more_btn, 12, 0);
+    lv_obj_t *label = ui_label(s_more_btn, &lv_font_montserrat_24, g_pal.text, "...");
+    lv_obj_center(label);
+    lv_obj_add_event_cb(s_more_btn, more_cb, LV_EVENT_CLICKED, NULL);
+}
+
+static void build_more_panel(lv_obj_t *scr)
+{
+    s_more_panel = lv_obj_create(scr);
+    lv_obj_set_size(s_more_panel, 220, 232);
+    lv_obj_set_pos(s_more_panel, 788, UI_H - UI_NAV_H - 240);
+    lv_obj_set_style_bg_color(s_more_panel, g_pal.card, 0);
+    lv_obj_set_style_border_color(s_more_panel, g_pal.border, 0);
+    lv_obj_set_style_pad_all(s_more_panel, 8, 0);
+    lv_obj_set_style_radius(s_more_panel, 12, 0);
+    ui_flex_col(s_more_panel, 4);
+    lv_obj_remove_flag(s_more_panel, LV_OBJ_FLAG_SCROLLABLE);
+    static const ui_screen_id_t extra[] = {SCR_GENERATOR, SCR_NETWORK, SCR_DIAG, SCR_SYSTEM};
+    for (size_t n = 0; n < sizeof(extra) / sizeof(extra[0]); n++) {
+        const int i = extra[n];
+        lv_obj_t *b = lv_button_create(s_more_panel);
+        lv_obj_set_size(b, 202, 48);
+        lv_obj_set_style_bg_color(b, g_pal.bg, 0);
+        lv_obj_set_style_shadow_width(b, 0, 0);
+        lv_obj_t *label = ui_label(b, &lv_font_montserrat_16, g_pal.text, "");
+        lv_label_set_text_fmt(label, "%s  %s", k_screens[i]->icon, tr(k_screens[i]->title));
+        lv_obj_align(label, LV_ALIGN_LEFT_MID, 4, 0);
+        lv_obj_add_event_cb(b, nav_cb, LV_EVENT_CLICKED, (void *)(intptr_t)i);
+    }
+    lv_obj_add_flag(s_more_panel, LV_OBJ_FLAG_HIDDEN);
 }
 
 void ui_start(lv_display_t *disp)
@@ -355,19 +425,23 @@ void ui_start(lv_display_t *disp)
     lv_obj_t *scr = lv_screen_active();
     lv_obj_set_style_bg_color(scr, g_pal.bg, 0);
     lv_obj_remove_flag(scr, LV_OBJ_FLAG_SCROLLABLE);
-    build_status_bar(scr);
+    s_status_bar = build_status_bar(scr);
     build_nav(scr);
 
     for (int i = 0; i < SCR_COUNT; i++) {
         lv_obj_t *page = lv_obj_create(scr);
         lv_obj_remove_style_all(page);
-        lv_obj_set_size(page, UI_CONTENT_W, UI_CONTENT_H);
-        lv_obj_set_pos(page, UI_NAV_W, UI_STATUS_H);
+        lv_obj_set_size(page, UI_CONTENT_W, i == SCR_OVERVIEW ? UI_H - UI_NAV_H : UI_CONTENT_H);
+        lv_obj_set_pos(page, 0, i == SCR_OVERVIEW ? 0 : UI_STATUS_H);
         lv_obj_set_style_pad_all(page, UI_PAD, 0);
+        if (i != SCR_OVERVIEW) {
+            lv_obj_add_flag(page, LV_OBJ_FLAG_SCROLLABLE);
+        }
         lv_obj_add_flag(page, LV_OBJ_FLAG_HIDDEN);
         s_pages[i] = page;
         k_screens[i]->create(page);
     }
+    build_more_panel(scr);
     show_screen(SCR_OVERVIEW);
     lv_timer_create(refresh_cb, REFRESH_MS, NULL);
     ESP_LOGI(TAG, "UI ready");

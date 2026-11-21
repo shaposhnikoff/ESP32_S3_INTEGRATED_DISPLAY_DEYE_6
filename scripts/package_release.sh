@@ -8,6 +8,8 @@ VERSION="$(tr -d '[:space:]' < version.txt)"
 OUT="dist/deye-hmi-${VERSION}"
 mkdir -p "${OUT}"
 cp LICENSE NOTICE "${OUT}/"
+mkdir -p "${OUT}/licenses/montserrat"
+cp components/ui/fonts/OFL.txt "${OUT}/licenses/montserrat/OFL.txt"
 while IFS= read -r license; do
     dest="${OUT}/licenses/${license#managed_components/}"
     mkdir -p "$(dirname "${dest}")"

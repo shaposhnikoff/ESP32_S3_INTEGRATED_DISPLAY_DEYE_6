@@ -60,6 +60,10 @@ link_state_t *app_state_link(void)
 {
     return &snapshot.link;
 }
+wifi_info_t *app_state_wifi(void)
+{
+    return &snapshot.wifi;
+}
 history_t *app_state_history(void)
 {
     return &history;

@@ -12,6 +12,8 @@ mkdir -p build-ui/screens
 build-ui/ui_smoke tests/fixtures/metrics_live_2026-11-20.txt build-ui/screens
 ```
 
-The executable navigates all ten screens, writes PPM renders, checks duplicate
-keyboard confirmation under ASan/UBSan and verifies immediate PIN enforcement
-and session expiry. These are simulated host results, not hardware screenshots.
+The executable navigates all ten screens, writes PPM renders, and separately
+captures the overview in normal battery, grid, low-SOC, fault and offline
+states (`state-*.ppm`). It checks duplicate keyboard confirmation under
+ASan/UBSan and verifies immediate PIN enforcement and session expiry. These
+are simulated host results, not hardware screenshots.

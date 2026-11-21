@@ -33,7 +33,9 @@ typedef struct {
     uint16_t backend_port;
     uint16_t poll_interval_s;
     uint16_t stale_after_s;
-    uint16_t screen_timeout_s; /* 0 = never */
+    uint16_t screen_timeout_s;    /* 0 = never */
+    uint16_t battery_capacity_wh; /* nominal combined capacity, 0 = unknown */
+    uint8_t battery_cutoff_pct;   /* reserve below which runtime is zero */
     uint8_t theme;
     uint8_t grid_sign;
     uint8_t language;

@@ -26,9 +26,10 @@ the standard theme transition without holding the display lock. Network
 transfer also runs after releasing that lock. Only one temporary RGB565 image
 is allocated; no continuous capture loop runs.
 
-Files in `docs/screenshots/` are real captures from the 1024x600 board on
-2026-11-20 with live inverter telemetry. `build-ui/screens/` contains separate
-host simulations and is not published.
+Files in `docs/screenshots/` are real captures from the 1024x600 board with
+live inverter telemetry. `overview.png` was replaced on 2026-11-21 after
+flashing the new layout. The other captures are from 2026-11-20.
+`build-ui/screens/` contains separate host simulations and is not published.
 
 This service has no authentication or TLS. Use it on a trusted LAN only, or
 disable *Deye HMI -> Enable LAN screenshots and display diagnostics*.

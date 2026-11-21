@@ -12,9 +12,13 @@ talks Modbus itself.
 ## Real device screenshots
 
 These images were captured on the ESP32 itself while reading the real exporter.
-They are not desktop renders or demo values.
+They are not desktop renders or demo values. The glanceable Overview was
+captured after flashing the new layout on 2026-11-21.
 
-![Live overview captured from the ESP32](docs/screenshots/overview.png)
+![Glanceable Overview captured from the ESP32](docs/screenshots/overview.png)
+
+The remaining captures below show the detailed screens from 2026-11-20;
+they are still useful as detailed views of the same telemetry.
 
 | Battery | Solar |
 |---|---|
@@ -26,7 +30,10 @@ They are not desktop renders or demo values.
 
 ## Features
 
-* Overview with telemetry-driven energy flow (direction only where the sign is verified)
+* Glanceable Overview with state headline, large battery and inverter cards,
+  and live data, power, runtime, grid and signal tiles
+* Runtime and time-to-full estimates based on 15 kWh combined battery capacity
+  and a 20% discharge cutoff; see [estimate details](docs/runtime-estimate.md)
 * Battery, Solar (per MPPT), Grid & Load, Generator, Charts (1 h - 7 d), Controls (read-only ToU), Network, Diagnostics, System
 * Live / stale / offline indication with data age; unknown values shown as `--`
 * On-screen Wi-Fi setup, NVS settings, optional settings PIN, screen timeout
@@ -79,7 +86,9 @@ the device at your PC.
 [build](docs/build.md) - [flashing](docs/flashing.md) - [release/OTA](docs/release.md) -
 [network file](docs/network-config.md) - [screenshots](docs/screenshots.md) -
 [troubleshooting](docs/troubleshooting.md) - [test results](docs/test-results.md) -
-[hardware validation](docs/hardware-validation.md)
+[hardware validation](docs/hardware-validation.md) -
+[overview state flow](docs/diagrams/overview-state-flow.md) -
+[navigation flow](docs/diagrams/navigation-flow.md)
 
 ## Known limitations
 
@@ -91,4 +100,5 @@ the device at your PC.
 * Screenshot diagnostics use unauthenticated HTTP; restrict them to a trusted LAN or disable `DEYE_SCREENSHOT_HTTP`.
 * English UI only; Cyrillic needs a font build.
 
-License: Apache-2.0 (see LICENSE, NOTICE).
+License: Apache-2.0 (see LICENSE, NOTICE). The Montserrat ExtraBold font is
+licensed under SIL OFL 1.1 (see `components/ui/fonts/OFL.txt`).

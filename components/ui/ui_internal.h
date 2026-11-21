@@ -11,9 +11,9 @@
 #define UI_W 1024
 #define UI_H 600
 #define UI_STATUS_H 56
-#define UI_NAV_W 140
-#define UI_CONTENT_W (UI_W - UI_NAV_W)
-#define UI_CONTENT_H (UI_H - UI_STATUS_H)
+#define UI_NAV_H 68
+#define UI_CONTENT_W UI_W
+#define UI_CONTENT_H (UI_H - UI_STATUS_H - UI_NAV_H)
 #define UI_PAD 12
 
 typedef struct {
@@ -34,6 +34,12 @@ typedef struct {
 } ui_palette_t;
 
 extern ui_palette_t g_pal;
+extern const lv_font_t deye_font_status;
+extern const lv_font_t deye_font_inverter;
+extern const lv_font_t deye_font_soc;
+extern const lv_font_t deye_font_value;
+extern const lv_font_t deye_font_tile;
+extern const lv_font_t deye_font_data;
 
 void ui_theme_init(lv_display_t *disp, bool dark);
 

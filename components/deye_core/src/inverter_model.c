@@ -298,3 +298,19 @@ const char *im_run_status_name(im_run_status_t s)
         return "Unknown";
     }
 }
+
+int32_t im_battery_eta_minutes(im_value_t soc_pct, im_value_t power_w, uint16_t capacity_wh, uint8_t cutoff_pct,
+                               bool *charging)
+{
+    if (!soc_pct.valid || !power_w.valid || capacity_wh == 0 || cutoff_pct >= 100 || !isfinite(soc_pct.value) ||
+        !isfinite(power_w.value) || soc_pct.value < 0 || soc_pct.value > 100 || fabsf(power_w.value) <= 20.0f) {
+        return -1;
+    }
+    const bool is_charging = power_w.value < 0;
+    if (charging != NULL) {
+        *charging = is_charging;
+    }
+    const float remaining_pct = is_charging ? 100.0f - soc_pct.value : soc_pct.value - cutoff_pct;
+    const float hours = fmaxf(remaining_pct, 0) * capacity_wh / (100.0f * fabsf(power_w.value));
+    return (int32_t)fminf(hours * 60.0f + 0.5f, 5999.0f);
+}

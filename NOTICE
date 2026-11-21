@@ -6,9 +6,14 @@ Licensed under the Apache License, Version 2.0 (see LICENSE).
 components/board/board_ws5b.c is derived from waveshare_rgb_lcd_port.c in
 https://github.com/waveshareteam/ESP32-S3-Touch-LCD-5 (Apache-2.0, Waveshare).
 
+The Montserrat ExtraBold font in components/ui/fonts/ and its LVGL subsets
+are licensed under the SIL Open Font License, Version 1.1. See
+components/ui/fonts/OFL.txt.
+
 Dependencies fetched at build time (not redistributed in this repository):
 LVGL (MIT), espressif/esp_lvgl_adapter and esp_lcd_touch_gt911 (Apache-2.0),
 ESP-IDF (Apache-2.0).
 
-Release archives include this notice, the project LICENSE, and upstream
-license/notice files from managed_components under licenses/.
+Release archives include this notice, the project LICENSE, the Montserrat
+OFL.txt, and upstream license/notice files from managed_components under
+licenses/.

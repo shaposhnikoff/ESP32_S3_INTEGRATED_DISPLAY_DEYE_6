@@ -114,6 +114,19 @@ static void test_empty_and_null(void)
     CHECK(!m.pv.total_power_w.valid);
 }
 
+static void test_battery_eta(void)
+{
+    bool charging = false;
+    CHECK(im_battery_eta_minutes(im_val(86), im_val(929), 15000, 20, &charging) == 639);
+    CHECK(!charging);
+    CHECK(im_battery_eta_minutes(im_val(62), im_val(-1200), 15000, 20, &charging) == 285);
+    CHECK(charging);
+    CHECK(im_battery_eta_minutes(im_val(20), im_val(929), 15000, 20, NULL) == 0);
+    CHECK(im_battery_eta_minutes(im_unknown(), im_val(929), 15000, 20, NULL) == -1);
+    CHECK(im_battery_eta_minutes(im_val(86), im_val(0), 15000, 20, NULL) == -1);
+    CHECK(im_battery_eta_minutes(im_val(86), im_val(929), 0, 20, NULL) == -1);
+}
+
 void suite_inverter_model(void)
 {
     RUN(test_live_capture);
@@ -123,4 +136,5 @@ void suite_inverter_model(void)
     RUN(test_missing_core);
     RUN(test_invalid_values);
     RUN(test_empty_and_null);
+    RUN(test_battery_eta);
 }
