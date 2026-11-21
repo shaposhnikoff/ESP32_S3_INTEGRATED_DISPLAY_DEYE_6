@@ -12,10 +12,12 @@ talks Modbus itself.
 ## Real device screenshots
 
 These images were captured on the ESP32 itself while reading the real exporter.
-They are not desktop renders or demo values. The glanceable Overview was
+They are not desktop renders or demo values. Both Overview states were
 captured after flashing the new layout on 2026-11-21.
 
-![Glanceable Overview captured from the ESP32](docs/screenshots/overview.png)
+| On battery | On grid |
+|---|---|
+| ![Overview on battery](docs/screenshots/overview.png) | ![Overview on grid](docs/screenshots/overview-grid.png) |
 
 The remaining captures below show the detailed screens from 2026-11-20;
 they are still useful as detailed views of the same telemetry.

@@ -27,8 +27,9 @@ transfer also runs after releasing that lock. Only one temporary RGB565 image
 is allocated; no continuous capture loop runs.
 
 Files in `docs/screenshots/` are real captures from the 1024x600 board with
-live inverter telemetry. `overview.png` was replaced on 2026-11-21 after
-flashing the new layout. The other captures are from 2026-11-20.
+live inverter telemetry. `overview.png` (on battery) was replaced on
+2026-11-21 after flashing the new layout; `overview-grid.png` (on grid) was
+captured later the same day. The other captures are from 2026-11-20.
 `build-ui/screens/` contains separate host simulations and is not published.
 
 This service has no authentication or TLS. Use it on a trusted LAN only, or
