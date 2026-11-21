@@ -19,8 +19,8 @@ captured after flashing the new layout on 2026-11-21.
 |---|---|
 | ![Overview on battery](docs/screenshots/overview.png) | ![Overview on grid](docs/screenshots/overview-grid.png) |
 
-The remaining captures below show the detailed screens from 2026-11-20;
-they are still useful as detailed views of the same telemetry.
+The detailed screens below were recaptured from the updated interface on
+2026-11-21.
 
 | Battery | Solar |
 |---|---|
