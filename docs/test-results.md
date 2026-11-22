@@ -1,4 +1,17 @@
-# Test results (2026-11-20)
+# Test results
+
+## 7B Overview update (2026-11-22)
+
+The ESP-IDF 5.5.1 firmware build passed. The core CTest target passed with
+ASan/UBSan, and the LVGL host smoke test rendered the Overview and six states
+with ASan/UBSan. On the connected 7B, `/metrics` reported HTTP 200, a
+62,222-byte source response, one successful fetch and two confirmed outage
+intervals for today. A 1024x600 screenshot showed the 24-hour dial and live
+telemetry. After capture, uptime was 60 s and minimum free internal RAM was
+22,695 bytes. Long-running operation and the next 10-minute fetch have not
+been checked.
+
+## Prior 5B release checks (2026-11-20)
 
 Results from the final development checks and the connected 5B board.
 

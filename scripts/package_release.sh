@@ -3,6 +3,11 @@
 # Run after a successful firmware build (scripts/idf.sh build).
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
+if [[ -f config/network.local.h ]]; then
+    echo "Refusing to package: config/network.local.h may be embedded in the firmware." >&2
+    echo "Build in a clean checkout without the local network profile for a public release." >&2
+    exit 1
+fi
 IDF_IMAGE="${IDF_IMAGE:-deye-hmi-idf:5.5.1}"
 VERSION="$(tr -d '[:space:]' < version.txt)"
 OUT="dist/deye-hmi-${VERSION}"
@@ -50,7 +55,7 @@ cat > "${OUT}/build-info.json" <<EOF
   "version": "${VERSION}",
   "commit": "${COMMIT}",
   "target": "esp32s3",
-  "board": "Waveshare ESP32-S3-Touch-LCD-5B (1024x600)",
+  "board": "Waveshare ESP32-S3-Touch-LCD-7B (1024x600)",
   "idf_image": "${IDF_IMAGE}",
   "built_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 }

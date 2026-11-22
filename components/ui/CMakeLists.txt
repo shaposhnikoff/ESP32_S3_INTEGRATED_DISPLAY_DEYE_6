@@ -4,6 +4,7 @@ idf_component_register(
          "scr_charts.c" "scr_controls.c" "scr_network.c" "scr_diag.c" "scr_system.c"
          "fonts/deye_font_status.c" "fonts/deye_font_inverter.c" "fonts/deye_font_soc.c"
          "fonts/deye_font_value.c" "fonts/deye_font_tile.c" "fonts/deye_font_data.c"
+         "fonts/deye_font_dial_soc.c" "fonts/deye_font_dial_time.c"
     INCLUDE_DIRS "include"
     PRIV_INCLUDE_DIRS "."
     REQUIRES lvgl__lvgl

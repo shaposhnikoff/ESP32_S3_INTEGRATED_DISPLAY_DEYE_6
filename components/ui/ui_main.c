@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "board.h"
 #include "esp_log.h"
@@ -11,6 +13,7 @@
 #include "ui_internal.h"
 
 static const char *TAG = "ui";
+static bool s_overview_only = true;
 
 #define REFRESH_MS 500
 #define PIN_UNLOCK_MS (5 * 60 * 1000)
@@ -26,6 +29,7 @@ static lv_obj_t *s_pages[SCR_COUNT];
 static lv_obj_t *s_nav_btns[SCR_COUNT];
 static lv_obj_t *s_status_bar;
 static lv_obj_t *s_more_btn;
+static lv_obj_t *s_schedule_btn;
 static lv_obj_t *s_more_panel;
 static ui_screen_id_t s_current = SCR_OVERVIEW;
 static app_snapshot_t s_snap;
@@ -86,7 +90,11 @@ bool ui_save_settings(const app_settings_t *s, bool wifi_changed, bool backend_c
 
 static void show_screen(ui_screen_id_t id)
 {
+    if (s_overview_only && id != SCR_OVERVIEW)
+        return;
     for (int i = 0; i < SCR_COUNT; i++) {
+        if (s_pages[i] == NULL)
+            continue;
         if (i == (int)id) {
             lv_obj_remove_flag(s_pages[i], LV_OBJ_FLAG_HIDDEN);
         } else {
@@ -100,19 +108,23 @@ static void show_screen(ui_screen_id_t id)
             }
         }
     }
-    if (id == SCR_OVERVIEW) {
-        lv_obj_add_flag(s_status_bar, LV_OBJ_FLAG_HIDDEN);
-    } else {
-        lv_obj_remove_flag(s_status_bar, LV_OBJ_FLAG_HIDDEN);
+    if (s_status_bar != NULL) {
+        if (id == SCR_OVERVIEW)
+            lv_obj_add_flag(s_status_bar, LV_OBJ_FLAG_HIDDEN);
+        else
+            lv_obj_remove_flag(s_status_bar, LV_OBJ_FLAG_HIDDEN);
     }
-    if (s_nav_btns[id] == NULL) {
-        lv_obj_add_state(s_more_btn, LV_STATE_CHECKED);
-    } else {
-        lv_obj_remove_state(s_more_btn, LV_STATE_CHECKED);
+    if (s_more_btn != NULL) {
+        if (s_nav_btns[id] == NULL)
+            lv_obj_add_state(s_more_btn, LV_STATE_CHECKED);
+        else
+            lv_obj_remove_state(s_more_btn, LV_STATE_CHECKED);
     }
-    lv_obj_add_flag(s_more_panel, LV_OBJ_FLAG_HIDDEN);
+    if (s_more_panel != NULL)
+        lv_obj_add_flag(s_more_panel, LV_OBJ_FLAG_HIDDEN);
     s_current = id;
-    lv_label_set_text(s_title, tr(k_screens[id]->title));
+    if (s_title != NULL)
+        lv_label_set_text(s_title, tr(k_screens[id]->title));
     s_force = true;
 }
 
@@ -265,7 +277,8 @@ static void refresh_cb(lv_timer_t *t)
     const bool changed = s_force || s_snap.telemetry_seq != s_last_seq || (++tick % 10) == 0;
     s_last_seq = s_snap.telemetry_seq;
     s_force = false;
-    update_status_bar(&s_snap);
+    if (s_status_bar != NULL)
+        update_status_bar(&s_snap);
     k_screens[s_current]->update(&s_snap, changed);
     handle_backlight();
 }
@@ -278,6 +291,8 @@ bool ui_capture_select_screen(const char *name)
     if (lv_obj_get_child_count(lv_layer_top()) != 0) {
         return false;
     }
+    if (s_overview_only && name != NULL && strcmp(name, "overview") != 0)
+        return false;
     if (name != NULL) {
         bool found = false;
         for (int i = 0; i < SCR_COUNT; i++) {
@@ -347,6 +362,14 @@ static void more_cb(lv_event_t *e)
     }
 }
 
+static void schedule_cb(lv_event_t *e)
+{
+    (void)e;
+    /* Schedule details will become a page when a live feed is configured. */
+    lv_obj_remove_state(s_schedule_btn, LV_STATE_CHECKED);
+    show_screen(SCR_OVERVIEW);
+}
+
 static void build_nav(lv_obj_t *scr)
 {
     lv_obj_t *nav = lv_obj_create(scr);
@@ -355,8 +378,8 @@ static void build_nav(lv_obj_t *scr)
     lv_obj_set_pos(nav, 0, UI_H - UI_NAV_H);
     lv_obj_remove_flag(nav, LV_OBJ_FLAG_SCROLLABLE);
 
-    static const ui_screen_id_t primary[] = {SCR_OVERVIEW, SCR_BATTERY, SCR_SOLAR, SCR_GRID, SCR_CHARTS, SCR_CONTROLS};
-    static const int32_t widths[] = {139, 139, 137, 178, 139, 139};
+    static const ui_screen_id_t primary[] = {SCR_OVERVIEW, SCR_BATTERY, SCR_SOLAR, SCR_GRID, SCR_CHARTS};
+    static const int32_t widths[] = {137, 137, 137, 178, 137};
     int32_t x = 16;
     for (size_t n = 0; n < sizeof(primary) / sizeof(primary[0]); n++) {
         const int i = primary[n];
@@ -377,6 +400,19 @@ static void build_nav(lv_obj_t *scr)
         lv_obj_add_event_cb(b, nav_cb, LV_EVENT_CLICKED, (void *)(intptr_t)i);
         s_nav_btns[i] = b;
     }
+    s_schedule_btn = lv_button_create(nav);
+    lv_obj_set_size(s_schedule_btn, 137, 52);
+    lv_obj_set_pos(s_schedule_btn, x - widths[4] - 8, 0);
+    /* Charts follows Schedule in the visible row. */
+    lv_obj_set_pos(s_nav_btns[SCR_CHARTS], x, 0);
+    lv_obj_set_style_bg_color(s_schedule_btn, g_pal.card, 0);
+    lv_obj_set_style_shadow_width(s_schedule_btn, 0, 0);
+    lv_obj_set_style_radius(s_schedule_btn, 12, 0);
+    lv_obj_t *schedule_label =
+        ui_label(s_schedule_btn, &lv_font_montserrat_14, g_pal.text, LV_SYMBOL_REFRESH "  Schedule");
+    lv_obj_center(schedule_label);
+    lv_obj_add_event_cb(s_schedule_btn, schedule_cb, LV_EVENT_CLICKED, NULL);
+    x += 145;
     s_more_btn = lv_button_create(nav);
     lv_obj_set_size(s_more_btn, 72, 52);
     lv_obj_set_pos(s_more_btn, x, 0);
@@ -392,15 +428,15 @@ static void build_nav(lv_obj_t *scr)
 static void build_more_panel(lv_obj_t *scr)
 {
     s_more_panel = lv_obj_create(scr);
-    lv_obj_set_size(s_more_panel, 220, 232);
-    lv_obj_set_pos(s_more_panel, 788, UI_H - UI_NAV_H - 240);
+    lv_obj_set_size(s_more_panel, 220, 286);
+    lv_obj_set_pos(s_more_panel, 788, UI_H - UI_NAV_H - 294);
     lv_obj_set_style_bg_color(s_more_panel, g_pal.card, 0);
     lv_obj_set_style_border_color(s_more_panel, g_pal.border, 0);
     lv_obj_set_style_pad_all(s_more_panel, 8, 0);
     lv_obj_set_style_radius(s_more_panel, 12, 0);
     ui_flex_col(s_more_panel, 4);
     lv_obj_remove_flag(s_more_panel, LV_OBJ_FLAG_SCROLLABLE);
-    static const ui_screen_id_t extra[] = {SCR_GENERATOR, SCR_NETWORK, SCR_DIAG, SCR_SYSTEM};
+    static const ui_screen_id_t extra[] = {SCR_CONTROLS, SCR_GENERATOR, SCR_NETWORK, SCR_DIAG, SCR_SYSTEM};
     for (size_t n = 0; n < sizeof(extra) / sizeof(extra[0]); n++) {
         const int i = extra[n];
         lv_obj_t *b = lv_button_create(s_more_panel);
@@ -417,6 +453,8 @@ static void build_more_panel(lv_obj_t *scr)
 
 void ui_start(lv_display_t *disp)
 {
+    setenv("TZ", "EET-2EEST,M3.5.0/3,M10.5.0/4", 1);
+    tzset();
     app_settings_t st;
     app_settings_get(&st);
     i18n_set_language((i18n_lang_t)st.language);
@@ -425,13 +463,18 @@ void ui_start(lv_display_t *disp)
     lv_obj_t *scr = lv_screen_active();
     lv_obj_set_style_bg_color(scr, g_pal.bg, 0);
     lv_obj_remove_flag(scr, LV_OBJ_FLAG_SCROLLABLE);
-    s_status_bar = build_status_bar(scr);
-    build_nav(scr);
+    if (!s_overview_only) {
+        s_status_bar = build_status_bar(scr);
+        build_nav(scr);
+    }
 
     for (int i = 0; i < SCR_COUNT; i++) {
+        if (s_overview_only && i != SCR_OVERVIEW)
+            continue;
         lv_obj_t *page = lv_obj_create(scr);
         lv_obj_remove_style_all(page);
-        lv_obj_set_size(page, UI_CONTENT_W, i == SCR_OVERVIEW ? UI_H - UI_NAV_H : UI_CONTENT_H);
+        lv_obj_set_size(page, UI_CONTENT_W,
+                        i == SCR_OVERVIEW ? (s_overview_only ? UI_H : UI_H - UI_NAV_H) : UI_CONTENT_H);
         lv_obj_set_pos(page, 0, i == SCR_OVERVIEW ? 0 : UI_STATUS_H);
         lv_obj_set_style_pad_all(page, UI_PAD, 0);
         if (i != SCR_OVERVIEW) {
@@ -441,7 +484,8 @@ void ui_start(lv_display_t *disp)
         s_pages[i] = page;
         k_screens[i]->create(page);
     }
-    build_more_panel(scr);
+    if (!s_overview_only)
+        build_more_panel(scr);
     show_screen(SCR_OVERVIEW);
     lv_timer_create(refresh_cb, REFRESH_MS, NULL);
     ESP_LOGI(TAG, "UI ready");

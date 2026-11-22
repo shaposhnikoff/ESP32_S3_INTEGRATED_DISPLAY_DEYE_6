@@ -1,9 +1,8 @@
 /*
- * Board support for the Waveshare ESP32-S3-Touch-LCD-5B (1024x600).
+ * Board support for the Waveshare ESP32-S3-Touch-LCD-7B (1024x600).
  *
  * Pin map, RGB timings and the CH422G / GT911 reset sequence follow the
- * official Waveshare example (examples/ESP-IDF/09_lvgl_v9_demo,
- * Apache-2.0, https://github.com/waveshareteam/ESP32-S3-Touch-LCD-5).
+ * Waveshare 7B example and the local alarms_monitor 7B driver.
  */
 #pragma once
 
@@ -27,8 +26,7 @@ extern "C" {
 esp_err_t board_display_start(lv_display_t **out_disp);
 
 /*
- * Backlight on/off through CH422G EXIO2. The 5B board exposes the backlight
- * only as an enable line, so there is no brightness (PWM) control.
+ * Backlight on/off through the 7B CH422G brightness register.
  */
 esp_err_t board_backlight_set(bool on);
 

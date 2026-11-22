@@ -1,17 +1,11 @@
-# Bottom navigation
+# Single-screen Overview
 
 ```mermaid
 flowchart TD
-    Nav["Bottom navigation"] --> Direct["Overview, Battery, Solar, Grid and Load, Charts, Controls"]
-    Nav --> More["More menu"]
-    More --> Extra["Generator, Network, Diagnostics, System"]
-    Direct --> Target["Selected tab"]
-    Extra --> Target
-    Target --> Protected{"Tab requires PIN and session expired?"}
-    Protected -->|no| Show["Show tab and highlight navigation"]
-    Protected -->|yes| Prompt["Enter PIN"]
-    Prompt -->|correct| Show
-    Prompt -->|wrong| Stay["Keep current tab"]
-    Show --> Expiry{"Protected session expires?"}
-    Expiry -->|yes| Overview["Return to Overview"]
+    Boot["Boot"] --> Create["Construct Overview only"]
+    Create --> Refresh["Refresh telemetry and schedule every 500 ms"]
+    Refresh --> Show["Render 24-hour dial and live status"]
+    Capture["HTTP screenshot request"] --> Select{"Screen is Overview?"}
+    Select -->|yes| Refresh
+    Select -->|no| Reject["Reject unavailable page"]
 ```

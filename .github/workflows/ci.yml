@@ -58,7 +58,7 @@ jobs:
         run: scripts/host_tests.sh
 
   firmware:
-    name: Firmware build (ESP32-S3-Touch-LCD-5B)
+    name: Firmware build (ESP32-S3-Touch-LCD-7B)
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     needs: [static-analysis, unit-tests]

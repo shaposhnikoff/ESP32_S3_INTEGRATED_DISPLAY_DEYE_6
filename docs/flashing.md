@@ -10,7 +10,7 @@ flash from the host with the pinned esptool below:
 ```bash
 # First flash / recovery: single merged image at offset 0
 uvx --from esptool==4.9.0 esptool.py --chip esp32s3 -p PORT -b 460800 write_flash 0x0 \
-  dist/deye-hmi-0.1.0/deye-hmi-0.1.0-full.bin
+  dist/deye-hmi-0.2.0/deye-hmi-0.2.0-full.bin
 
 # Or individual images (see flash_args)
 cd build && uvx --from esptool==4.9.0 esptool.py --chip esp32s3 -p PORT -b 460800 --before default_reset \

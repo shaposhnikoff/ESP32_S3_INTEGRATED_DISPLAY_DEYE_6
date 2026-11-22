@@ -36,6 +36,8 @@ typedef struct {
     uint16_t screen_timeout_s;    /* 0 = never */
     uint16_t battery_capacity_wh; /* nominal combined capacity, 0 = unknown */
     uint8_t battery_cutoff_pct;   /* reserve below which runtime is zero */
+    uint8_t battery_warning_pct;  /* Overview warning threshold */
+    char outage_group[8];         /* DTEK group, e.g. GPV4.1 */
     uint8_t theme;
     uint8_t grid_sign;
     uint8_t language;
