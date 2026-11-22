@@ -22,6 +22,7 @@ static ctrl_ctx_t s_ctrl;
 static uint32_t s_seq;
 static char s_error[64];
 static app_settings_t s_settings;
+static outage_schedule_t s_schedule;
 
 int64_t app_now_ms(void)
 {
@@ -34,6 +35,7 @@ void app_state_init(const app_settings_t *settings)
     s_settings_lock = xSemaphoreCreateMutex();
     configASSERT(s_lock && s_settings_lock);
     s_settings = *settings;
+    memset(&s_schedule, 0, sizeof(s_schedule));
     im_reset(&s_model);
     const link_config_t lc = {
         .stale_after_ms = (uint32_t)settings->stale_after_s * 1000u,
@@ -144,4 +146,30 @@ bool app_state_snapshot(app_snapshot_t *out)
     out->now_ms = app_now_ms();
     app_state_unlock();
     return true;
+}
+
+void app_state_schedule_publish(const outage_schedule_t *schedule)
+{
+    if (app_state_lock(portMAX_DELAY)) {
+        s_schedule = *schedule;
+        app_state_unlock();
+    }
+}
+
+bool app_state_schedule_get_day(int year, int month, int day, outage_day_t *out, int64_t *updated_epoch)
+{
+    if (!app_state_lock(0))
+        return false;
+    bool found = false;
+    for (int i = 0; i < 2; i++) {
+        const outage_dated_day_t *entry = &s_schedule.days[i];
+        if (entry->present && entry->year == year && entry->month == month && entry->day == day) {
+            *out = entry->schedule;
+            *updated_epoch = s_schedule.updated_epoch;
+            found = true;
+            break;
+        }
+    }
+    app_state_unlock();
+    return found;
 }

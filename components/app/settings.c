@@ -20,6 +20,8 @@ void settings_defaults(app_settings_t *s)
     s->screen_timeout_s = 300;
     s->battery_capacity_wh = 15000;
     s->battery_cutoff_pct = 20;
+    s->battery_warning_pct = 40;
+    strlcpy(s->outage_group, "GPV4.1", sizeof(s->outage_group));
     s->theme = THEME_DARK;
     s->grid_sign = GRID_SIGN_UNVERIFIED;
     strlcpy(s->ntp_server, "pool.ntp.org", sizeof(s->ntp_server));
@@ -89,6 +91,8 @@ esp_err_t settings_load(app_settings_t *out)
     get_u16(h, "scr_to", &out->screen_timeout_s, 0, 3600);
     get_u16(h, "bat_wh", &out->battery_capacity_wh, 0, 65535);
     get_u8(h, "bat_cut", &out->battery_cutoff_pct, 99);
+    get_u8(h, "bat_warn", &out->battery_warning_pct, 100);
+    get_str(h, "out_group", out->outage_group, sizeof(out->outage_group));
     get_u8(h, "theme", &out->theme, THEME_LIGHT);
     get_u8(h, "gsign", &out->grid_sign, GRID_SIGN_POSITIVE_EXPORT);
     get_u8(h, "lang", &out->language, 0);
@@ -128,6 +132,8 @@ esp_err_t settings_save(const app_settings_t *s)
     TRY(nvs_set_u16(h, "scr_to", s->screen_timeout_s));
     TRY(nvs_set_u16(h, "bat_wh", s->battery_capacity_wh));
     TRY(nvs_set_u8(h, "bat_cut", s->battery_cutoff_pct));
+    TRY(nvs_set_u8(h, "bat_warn", s->battery_warning_pct));
+    TRY(nvs_set_str(h, "out_group", s->outage_group));
     TRY(nvs_set_u8(h, "theme", s->theme));
     TRY(nvs_set_u8(h, "gsign", s->grid_sign));
     TRY(nvs_set_u8(h, "lang", s->language));

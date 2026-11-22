@@ -14,6 +14,7 @@
 #include "history.h"
 #include "inverter_model.h"
 #include "link_state.h"
+#include "outage_dial.h"
 #include "settings.h"
 
 #ifdef __cplusplus
@@ -98,6 +99,8 @@ void app_settings_set(const app_settings_t *in);
 
 /* Copies everything the UI needs. Non-blocking: returns false if busy. */
 bool app_state_snapshot(app_snapshot_t *out);
+void app_state_schedule_publish(const outage_schedule_t *schedule);
+bool app_state_schedule_get_day(int year, int month, int day, outage_day_t *out, int64_t *updated_epoch);
 
 int64_t app_now_ms(void);
 

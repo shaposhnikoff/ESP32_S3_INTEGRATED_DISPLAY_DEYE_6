@@ -40,6 +40,8 @@ extern const lv_font_t deye_font_soc;
 extern const lv_font_t deye_font_value;
 extern const lv_font_t deye_font_tile;
 extern const lv_font_t deye_font_data;
+extern const lv_font_t deye_font_dial_soc;
+extern const lv_font_t deye_font_dial_time;
 
 void ui_theme_init(lv_display_t *disp, bool dark);
 
@@ -113,6 +115,8 @@ extern const ui_screen_t scr_overview, scr_battery, scr_solar, scr_grid, scr_gen
 bool ui_is_live(const app_snapshot_t *s);
 /* Selects only monitoring tabs for LAN captures; caller holds the LVGL lock. */
 bool ui_capture_select_screen(const char *name);
+/* Deterministic local-time override for host captures; -1 restores the system clock. */
+void ui_overview_set_now(int64_t epoch);
 const char *ui_battery_state_text(im_value_t power_w);
 /* Applies settings: persists, publishes, and triggers dependent actions. */
 bool ui_save_settings(const app_settings_t *s, bool wifi_changed, bool backend_changed);

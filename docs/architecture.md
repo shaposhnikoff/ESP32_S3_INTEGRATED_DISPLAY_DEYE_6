@@ -1,13 +1,15 @@
 # Architecture
 
 ```text
-Raspberry Pi (unchanged)                ESP32-S3-Touch-LCD-5B
+Raspberry Pi (unchanged)                ESP32-S3-Touch-LCD-7B
 +---------------------------+  Wi-Fi   +------------------------------------------+
 | Deye exporter :9101       | <------- | telemetry task: HTTP GET /metrics        |
 |  Modbus RS485 -> inverter |  GET     |   -> deye_core parser -> inverter_model  |
 +---------------------------+          |   -> app_state (mutex) + history         |
-                                       | LVGL task: 500 ms timer copies snapshot  |
-                                       |   -> screens update labels in place      |
+Public Kyiv-region JSON -- HTTPS GET ->| outage task -> validated group 4.1 plan |
+                                       |   -> app_state (mutex)                    |
+                                       | LVGL task: 500 ms timer copies state     |
+                                       |   -> Overview updates labels and dial    |
                                        +------------------------------------------+
 ```
 
@@ -18,10 +20,10 @@ Modbus and only issues HTTP GET.
 
 | Component | Role | ESP deps |
 |---|---|---|
-| `components/deye_core` | Prometheus parser, typed model, freshness/backoff, history, control safety, formatting | none (host-testable) |
-| `components/board` | 5B RGB panel, CH422G, GT911, LVGL adapter start, backlight | esp_lcd, driver |
-| `components/app` | settings (NVS), app_state, Wi-Fi, telemetry task, OTA, diagnostics | IDF |
-| `components/ui` | theme, widgets, dialogs, 10 screens, i18n | LVGL |
+| `components/deye_core` | Prometheus parser, typed model, history, outage dial and coverage logic | none (host-testable) |
+| `components/board` | 7B RGB panel, CH422G, GT911, LVGL adapter start, backlight | esp_lcd, driver |
+| `components/app` | settings (NVS), app_state, Wi-Fi, telemetry and outage tasks, OTA, diagnostics | IDF |
+| `components/ui` | theme, widgets and the single-screen Overview | LVGL |
 | `main` | boot sequence | - |
 
 ## Data flow and ownership
@@ -32,12 +34,13 @@ Modbus and only issues HTTP GET.
 * Producers parse **outside** the lock and copy the result in.
 * The UI never blocks: `app_state_snapshot()` uses try-lock; on contention the
   refresh is skipped for one tick.
-* Screens are created once at boot and only shown/hidden; updates change
-  label text in place (no per-update object churn).
+* Only Overview is created at boot. Updates change labels and arc angles in
+  place (no per-update object churn).
 
 ## Boot
 
-settings -> state -> display/touch/LVGL -> UI -> Wi-Fi -> telemetry. The
+settings -> state -> display/touch/LVGL -> Overview -> Wi-Fi -> telemetry and
+outage reader. The
 control context starts empty on every boot; nothing is replayed. After 60 s of
 healthy running the OTA image is marked valid (rollback otherwise).
 

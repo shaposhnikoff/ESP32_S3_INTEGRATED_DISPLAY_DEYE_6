@@ -12,6 +12,8 @@
 #include "esp_timer.h"
 #include "net_wifi.h"
 #include "ota.h"
+#include "outage_dial.h"
+#include "outage_fetch.h"
 #include "sdkconfig.h"
 #include "settings.h"
 #include "telemetry.h"
@@ -41,6 +43,7 @@ void app_main(void)
         ESP_LOGE(TAG, "network profile not applied (%s)", esp_err_to_name(err));
     }
     app_state_init(&settings);
+    outage_set_adapter(app_state_schedule_get_day);
 
     lv_display_t *disp = NULL;
     ESP_ERROR_CHECK(board_display_start(&disp));
@@ -57,6 +60,9 @@ void app_main(void)
     }
 #endif
     ESP_ERROR_CHECK(telemetry_start());
+    err = outage_fetch_start();
+    if (err != ESP_OK)
+        ESP_LOGE(TAG, "schedule reader not started (%s)", esp_err_to_name(err));
 
     const esp_timer_create_args_t ta = {.callback = mark_valid_cb, .name = "app_valid"};
     esp_timer_handle_t t;

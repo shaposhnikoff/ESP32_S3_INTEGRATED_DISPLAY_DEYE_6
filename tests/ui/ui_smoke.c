@@ -1,39 +1,17 @@
 /* Runs the real UI on a memory display and saves evidence, never hardware QA. */
+#include "outage_dial.h"
 #include "ui.h"
 #include "ui_internal.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 static uint8_t draw_buffer[UI_W * UI_H * 3];
 static uint8_t frame[UI_W * UI_H * 3];
 static int text_submissions;
 static void refresh(void);
-
-static void navigate(ui_screen_id_t id)
-{
-    lv_obj_t *root = lv_screen_active();
-    lv_obj_t *nav = lv_obj_get_child(root, 1);
-    static const ui_screen_id_t primary[] = {SCR_OVERVIEW, SCR_BATTERY, SCR_SOLAR, SCR_GRID, SCR_CHARTS, SCR_CONTROLS};
-    for (int i = 0; i < 6; i++) {
-        if (primary[i] == id) {
-            lv_obj_send_event(lv_obj_get_child(nav, i), LV_EVENT_CLICKED, NULL);
-            return;
-        }
-    }
-    static const ui_screen_id_t extra[] = {SCR_GENERATOR, SCR_NETWORK, SCR_DIAG, SCR_SYSTEM};
-    lv_obj_send_event(lv_obj_get_child(nav, 6), LV_EVENT_CLICKED, NULL);
-    lv_obj_t *panel = lv_obj_get_child(root, -1);
-    assert(!lv_obj_has_flag(panel, LV_OBJ_FLAG_HIDDEN));
-    for (int i = 0; i < 4; i++) {
-        if (extra[i] == id) {
-            lv_obj_send_event(lv_obj_get_child(panel, i), LV_EVENT_CLICKED, NULL);
-            return;
-        }
-    }
-    assert(false);
-}
 
 static void text_submitted(const char *text, void *user)
 {
@@ -51,28 +29,6 @@ static void test_text_dialog_submits_once(void)
     lv_obj_send_event(keyboard, LV_EVENT_READY, NULL);
     assert(text_submissions == 1);
     refresh();
-}
-
-static void test_pin_blocks_immediate_navigation_and_expires(void)
-{
-    lv_obj_t *bar = lv_obj_get_child(lv_screen_active(), 0);
-    lv_obj_t *title = lv_obj_get_child(bar, 1);
-    navigate(SCR_OVERVIEW);
-    refresh();
-    app_settings_t settings;
-    app_settings_get(&settings);
-    strlcpy(settings.pin, "1234", sizeof(settings.pin));
-    app_settings_set(&settings);
-    navigate(SCR_NETWORK);
-    assert(strcmp(lv_label_get_text(title), tr(T_OVERVIEW)) == 0);
-    lv_obj_t *overlay = lv_obj_get_child(lv_layer_top(), -1);
-    lv_textarea_set_text(lv_obj_get_child(overlay, 1), "1234");
-    lv_obj_send_event(lv_obj_get_child(overlay, -1), LV_EVENT_READY, NULL);
-    refresh();
-    assert(strcmp(lv_label_get_text(title), tr(T_NETWORK)) == 0);
-    lv_tick_inc(5 * 60 * 1000);
-    refresh();
-    assert(strcmp(lv_label_get_text(title), tr(T_OVERVIEW)) == 0);
 }
 
 static void flush(lv_display_t *display, const lv_area_t *area, uint8_t *pixels)
@@ -113,8 +69,40 @@ static void capture_screen(const char *directory, int page)
     capture_named(directory, name);
 }
 
+static void assert_labels_fit(lv_obj_t *parent)
+{
+    lv_obj_update_layout(parent);
+    for (uint32_t i = 0; i < lv_obj_get_child_count(parent); i++) {
+        lv_obj_t *child = lv_obj_get_child(parent, i);
+        if (!lv_obj_has_flag(child, LV_OBJ_FLAG_HIDDEN) && lv_obj_check_type(child, &lv_label_class)) {
+            assert(lv_obj_get_x(child) >= 0);
+            assert(lv_obj_get_y(child) >= 0);
+            assert(lv_obj_get_x(child) + lv_obj_get_width(child) <= lv_obj_get_width(parent));
+            assert(lv_obj_get_y(child) + lv_obj_get_height(child) <= lv_obj_get_height(parent));
+        }
+    }
+}
+
+static void assert_overview_fit(void)
+{
+    lv_obj_t *page = lv_obj_get_child(lv_screen_active(), 0);
+    lv_obj_t *header = lv_obj_get_child(page, 0);
+    lv_obj_t *battery = lv_obj_get_child(page, 1);
+    lv_obj_t *inverter = lv_obj_get_child(page, 2);
+    assert_labels_fit(header);
+    assert_labels_fit(battery);
+    assert_labels_fit(inverter);
+    assert_labels_fit(lv_obj_get_child(battery, 0));
+}
+
 static void capture_overview_states(const char *directory)
 {
+    struct tm fixture_time = {
+        .tm_year = 2026 - 1900, .tm_mon = 10, .tm_mday = 22, .tm_hour = 19, .tm_min = 10, .tm_isdst = -1};
+    const time_t now = mktime(&fixture_time);
+    outage_mock_set_today(2026, 11, 22, now);
+    outage_set_adapter(outage_mock_get_day);
+    ui_overview_set_now(now);
     inverter_model_t *model = app_state_model();
     model->battery.soc_pct = im_val(86);
     model->battery.power_w = im_val(929);
@@ -124,6 +112,7 @@ static void capture_overview_states(const char *directory)
     model->inverter.run_status = IM_RUN_NORMAL;
     assert(ui_capture_select_screen("overview"));
     refresh();
+    assert_overview_fit();
     capture_named(directory, "state-ok");
 
     model->battery.soc_pct = im_val(62);
@@ -131,6 +120,7 @@ static void capture_overview_states(const char *directory)
     model->grid.connected = im_val(1);
     assert(ui_capture_select_screen("overview"));
     refresh();
+    assert_overview_fit();
     capture_named(directory, "state-grid");
 
     model->battery.soc_pct = im_val(24);
@@ -138,6 +128,7 @@ static void capture_overview_states(const char *directory)
     model->grid.connected = im_val(0);
     assert(ui_capture_select_screen("overview"));
     refresh();
+    assert_overview_fit();
     capture_named(directory, "state-warn");
 
     model->battery.soc_pct = im_val(86);
@@ -146,14 +137,34 @@ static void capture_overview_states(const char *directory)
     model->inverter.run_status = IM_RUN_FAULT;
     assert(ui_capture_select_screen("overview"));
     refresh();
+    assert_overview_fit();
     capture_named(directory, "state-fault");
 
     model->inverter.run_status = IM_RUN_NORMAL;
     lv_tick_inc(3 * 60 * 1000);
     assert(ui_capture_select_screen("overview"));
     refresh();
+    assert_overview_fit();
     capture_named(directory, "state-stale");
     link_on_success(app_state_link(), app_now_ms(), 20, true, true, 1);
+    model->inverter.run_status = IM_RUN_NORMAL;
+    model->battery.soc_pct = im_val(86);
+    model->battery.power_w = im_val(929);
+    model->load.power_w = im_val(908);
+    model->grid.connected = im_val(0);
+    outage_set_adapter(NULL);
+    assert(ui_capture_select_screen("overview"));
+    refresh();
+    assert_overview_fit();
+    capture_named(directory, "state-schedule-unavailable");
+    link_on_success(app_state_link(), app_now_ms(), 20, false, true, 1);
+    assert(ui_capture_select_screen("overview"));
+    refresh();
+    lv_obj_t *overview = lv_obj_get_child(lv_screen_active(), 0);
+    lv_obj_t *headline = lv_obj_get_child(lv_obj_get_child(overview, 0), 1);
+    assert(strcmp(lv_label_get_text(headline), "NO DATA") == 0);
+    link_on_success(app_state_link(), app_now_ms(), 20, true, true, 1);
+    ui_overview_set_now(-1);
 }
 
 int main(int argc, char **argv)
@@ -168,7 +179,8 @@ int main(int argc, char **argv)
                                .poll_interval_s = 3,
                                .stale_after_s = 30,
                                .battery_capacity_wh = 15000,
-                               .battery_cutoff_pct = 20};
+                               .battery_cutoff_pct = 20,
+                               .battery_warning_pct = 40};
     strlcpy(settings.backend_host, "mock", sizeof(settings.backend_host));
     app_state_init(&settings);
     FILE *fixture = fopen(argv[1], "rb");
@@ -183,23 +195,17 @@ int main(int argc, char **argv)
     app_state_wifi()->rssi = -56;
     ui_start(display);
     refresh();
-    for (int i = 0; i < SCR_COUNT; i++) {
-        navigate((ui_screen_id_t)i);
-        refresh();
-        lv_obj_t *bar = lv_obj_get_child(lv_screen_active(), 0);
-        const char *title = lv_label_get_text(lv_obj_get_child(bar, 1));
-        assert(strcmp(title, tr((i18n_id_t)i)) == 0);
-        capture_screen(argv[2], i);
-    }
-    puts("UI smoke: 10 screens navigated and rendered");
+    assert(lv_obj_get_child_count(lv_screen_active()) == 1);
+    capture_screen(argv[2], SCR_OVERVIEW);
+    puts("UI smoke: overview rendered without navigation pages");
     capture_overview_states(argv[2]);
     test_text_dialog_submits_once();
-    test_pin_blocks_immediate_navigation_and_expires();
     assert(!ui_capture_select_screen("controls"));
     assert(!ui_capture_select_screen("network"));
     assert(!ui_capture_select_screen("system"));
-    assert(ui_capture_select_screen("solar"));
-    puts("UI regressions: double confirm, PIN session and capture restrictions passed");
+    assert(!ui_capture_select_screen("solar"));
+    assert(ui_capture_select_screen("overview"));
+    puts("UI regressions: double confirm and capture restrictions passed");
     lv_deinit();
     return 0;
 }

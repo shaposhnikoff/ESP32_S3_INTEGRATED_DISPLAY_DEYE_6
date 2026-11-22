@@ -17,7 +17,8 @@ endif()
 
 add_executable(core_tests
     unit/test_main.c unit/test_prom_parser.c unit/test_inverter_model.c
-    unit/test_link_state.c unit/test_history.c unit/test_control.c unit/test_fmt.c)
+    unit/test_link_state.c unit/test_history.c unit/test_control.c unit/test_fmt.c
+    unit/test_outage_dial.c unit/test_outage_json.c)
 target_link_libraries(core_tests PRIVATE deye_core)
 target_compile_options(core_tests PRIVATE -Wall -Wextra -Werror)
 if(DEYE_SANITIZE)

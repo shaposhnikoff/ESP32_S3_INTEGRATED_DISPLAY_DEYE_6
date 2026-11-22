@@ -3,17 +3,21 @@
 #include "sdkconfig.h"
 #if CONFIG_DEYE_SCREENSHOT_HTTP
 
+#include "app_state.h"
 #include "diag.h"
 #include "esp_check.h"
+#include "esp_heap_caps.h"
 #include "esp_http_server.h"
 #include "esp_log.h"
 #include "esp_lv_adapter.h"
 #include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "outage_fetch.h"
 #include "ui.h"
 #include "ui_internal.h"
 #include <stdio.h>
+#include <time.h>
 
 static const char *TAG = "capture";
 
@@ -114,12 +118,46 @@ static esp_err_t metrics_handler(httpd_req_t *req)
 {
     diag_info_t info;
     diag_read(&info);
-    char body[256];
+    outage_fetch_diag_t outage;
+    outage_fetch_diagnostics(&outage);
+    time_t now = time(NULL);
+    struct tm local;
+    localtime_r(&now, &local);
+    outage_day_t today = {0};
+    int64_t schedule_updated = 0;
+    bool scheduled =
+        app_state_schedule_get_day(local.tm_year + 1900, local.tm_mon + 1, local.tm_mday, &today, &schedule_updated);
+    int wifi_status = -1;
+    if (app_state_lock(0)) {
+        wifi_status = app_state_wifi()->status;
+        app_state_unlock();
+    }
+    char body[850];
     snprintf(body, sizeof(body),
              "deye_hmi_uptime_seconds %llu\n"
              "deye_hmi_heap_free_bytes %lu\n"
-             "deye_hmi_psram_free_bytes %lu\n",
-             (unsigned long long)info.uptime_s, (unsigned long)info.heap_internal_free, (unsigned long)info.psram_free);
+             "deye_hmi_heap_min_free_bytes %lu\n"
+             "deye_hmi_heap_largest_free_block_bytes %lu\n"
+             "deye_hmi_psram_free_bytes %lu\n"
+             "deye_hmi_psram_total_bytes %lu\n"
+             "deye_hmi_epoch_seconds %lld\n"
+             "deye_hmi_wifi_status %d\n"
+             "deye_hmi_outage_attempts_total %lu\n"
+             "deye_hmi_outage_successes_total %lu\n"
+             "deye_hmi_outage_stage %d\n"
+             "deye_hmi_outage_error %d\n"
+             "deye_hmi_outage_tls_error %d\n"
+             "deye_hmi_outage_tls_flags %d\n"
+             "deye_hmi_outage_http_status %d\n"
+             "deye_hmi_outage_body_bytes %lu\n"
+             "deye_hmi_outage_today_available %d\n"
+             "deye_hmi_outage_today_intervals %u\n",
+             (unsigned long long)info.uptime_s, (unsigned long)info.heap_internal_free,
+             (unsigned long)info.heap_internal_min,
+             (unsigned long)heap_caps_get_largest_free_block(MALLOC_CAP_INTERNAL), (unsigned long)info.psram_free,
+             (unsigned long)info.psram_total, (long long)now, wifi_status, (unsigned long)outage.attempts,
+             (unsigned long)outage.successes, outage.stage, outage.error, outage.tls_error, outage.tls_flags,
+             outage.http_status, (unsigned long)outage.body_bytes, scheduled, today.count);
     httpd_resp_set_type(req, "text/plain; version=0.0.4");
     return httpd_resp_sendstr(req, body);
 }

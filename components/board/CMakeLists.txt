@@ -1,5 +1,5 @@
 idf_component_register(
-    SRCS "board_ws5b.c"
+    SRCS "board_ws7b.c"
     INCLUDE_DIRS "include"
-    REQUIRES driver esp_lcd
+    REQUIRES esp_driver_gpio esp_driver_i2c esp_lcd
     PRIV_REQUIRES esp_timer)

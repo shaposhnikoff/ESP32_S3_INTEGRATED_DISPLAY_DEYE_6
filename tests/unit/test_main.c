@@ -38,6 +38,8 @@ void suite_link_state(void);
 void suite_history(void);
 void suite_control(void);
 void suite_fmt(void);
+void suite_outage_dial(void);
+void suite_outage_json(void);
 
 int main(void)
 {
@@ -53,6 +55,10 @@ int main(void)
     suite_control();
     printf("fmt\n");
     suite_fmt();
+    printf("outage_dial\n");
+    suite_outage_dial();
+    printf("outage_json\n");
+    suite_outage_json();
     printf("%d checks, %d failures\n", g_checks, g_failures);
     return g_failures == 0 ? 0 : 1;
 }
