@@ -17,7 +17,7 @@ void settings_defaults(app_settings_t *s)
     s->backend_port = CONFIG_DEYE_DEFAULT_BACKEND_PORT;
     s->poll_interval_s = 3;
     s->stale_after_s = 30;
-    s->screen_timeout_s = 300;
+    s->screen_timeout_s = 0;
     s->battery_capacity_wh = 15000;
     s->battery_cutoff_pct = 20;
     s->battery_warning_pct = 40;

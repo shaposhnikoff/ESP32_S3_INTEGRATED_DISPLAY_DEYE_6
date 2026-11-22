@@ -243,6 +243,9 @@ static void wake_cb(lv_event_t *e)
 
 static void handle_backlight(void)
 {
+    /* The single-screen status display stays on even with an old NVS timeout. */
+    if (s_overview_only)
+        return;
     app_settings_t st;
     app_settings_get(&st);
     if (st.screen_timeout_s == 0 || !s_backlight_on) {

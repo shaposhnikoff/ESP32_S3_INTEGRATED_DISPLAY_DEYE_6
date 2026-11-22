@@ -3,6 +3,7 @@
 The Waveshare 7B uses a 1024x600 landscape canvas. The current firmware builds
 only Overview. A legend replaces the bottom navigation, leaving more internal
 RAM available for Wi-Fi, TLS and screenshots.
+The single-screen display does not apply the legacy NVS backlight timeout.
 
 Principles applied:
 
