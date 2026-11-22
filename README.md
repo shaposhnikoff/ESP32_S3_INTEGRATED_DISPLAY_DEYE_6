@@ -18,6 +18,7 @@ outage intervals for group 4.1 from the public
 The white hand marks the current local time; amber arcs mark scheduled outages.
 The board downloads the JSON every 10 minutes and shows `SCHEDULE UNAVAILABLE`
 if the source is missing or stale. Only Overview is built in the current UI.
+Its backlight stays on regardless of a timeout saved by older firmware.
 
 ## Earlier 7B host previews
 
